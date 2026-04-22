@@ -35,8 +35,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
     case WM_MOUSEMOVE:
         if (!app_state.physics.rect->is_dropped) {
-            app_state.mouse_pos.x = (float)GET_X_LPARAM(lParam);
-            app_state.mouse_pos.y = (float)GET_Y_LPARAM(lParam);
+            app_state.physics.rect->position.x = (float)GET_X_LPARAM(lParam);
+            app_state.physics.rect->position.y = (float)GET_Y_LPARAM(lParam);
         }
         return 0;
 

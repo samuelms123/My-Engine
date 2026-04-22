@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 void engine_init(EngineState* state) {
-    state->floor = 600.0f;
+    state->floor = 560.0f;
     state->gravity = 1150.0f;
     state->rect = malloc(sizeof(Entity));
 

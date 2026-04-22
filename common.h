@@ -5,7 +5,7 @@
 #include <stdbool.h>
 
 typedef struct {
-    int size;
+    float size;
     Vec2 velocity;
     Vec2 position;
     bool is_dropped;
