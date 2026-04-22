@@ -47,6 +47,7 @@ void engine_update(EngineState* state, float dt) {
 
     }
 }
-int engine_render(HWND hwnd) {
-    return 0;
+void engine_render(HWND hwnd) {
+        InvalidateRect(hwnd, NULL, TRUE); 
+        UpdateWindow(hwnd);
 }

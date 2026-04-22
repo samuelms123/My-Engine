@@ -143,10 +143,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
         // RENDERING PROCESS
         if (render_accumulator >= TARGET_RENDER_DELTA) {
-            
-            InvalidateRect(hwnd, NULL, TRUE); 
-            UpdateWindow(hwnd);
-
+            engine_render(hwnd);
             render_accumulator -= TARGET_RENDER_DELTA; 
         }
 

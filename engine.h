@@ -6,6 +6,6 @@
 
 void engine_init(EngineState* state);
 void engine_update(EngineState* state, float dt);
-int engine_render(HWND hwnd);
+void engine_render(HWND hwnd);
 
 #endif
