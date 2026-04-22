@@ -3,11 +3,13 @@
 #include <windows.h>
 
 AppState app_state;
+float mouse_x;
+float mouse_y;
 
 void engine_cleanup(EngineState* state) {
-    if (state->rect != NULL) {
-        free(state->rect);
-        state->rect = NULL; // Prevent dangling pointer
+    if (state->rects != NULL) {
+        free(state->rects);
+        state->rects = NULL;
     }
 }
 
@@ -23,28 +25,46 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         {
             PAINTSTRUCT ps;
             HDC hdc = BeginPaint(hwnd, &ps);
+            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
 
-            Entity* rect = app_state.physics.rect;
-            Vec2 rect_pos = rect->position;
+            if (app_state.physics.dropped_count < app_state.physics.rect_count) {
+                Rectangle(hdc, (int)mouse_x, (int)mouse_y, (int)mouse_x + 100, (int)mouse_y + 100);
+            }
+            else {
+                DrawText(hdc, L"Out of rectangles:(", -1, &ps.rcPaint, DT_CENTER);
+            }
 
-            Rectangle(hdc, rect_pos.x, rect_pos.y, rect_pos.x + rect->size, rect_pos.y + rect->size);
+            for (int i = 0; i < app_state.physics.dropped_count; i++) {
+                Entity* r = &app_state.physics.rects[i];
+                Rectangle(hdc, (int)r->position.x, (int)r->position.y, (int)r->position.x + r->size, (int)r->position.y + r->size);
+            }
 
             EndPaint(hwnd, &ps);
         }
         return 0;
 
     case WM_MOUSEMOVE:
-        if (!app_state.physics.rect->is_dropped) {
-            app_state.physics.rect->position.x = (float)GET_X_LPARAM(lParam);
-            app_state.physics.rect->position.y = (float)GET_Y_LPARAM(lParam);
+        {
+            mouse_x = (float)GET_X_LPARAM(lParam);
+            mouse_y = (float)GET_Y_LPARAM(lParam);
         }
         return 0;
 
     case WM_LBUTTONUP:
         {
-            app_state.physics.rect->is_dropped = true;
+            EngineState* es = &app_state.physics;
+            if (es->dropped_count < es->rect_count) {
+                int next_ent_index = es->dropped_count;
+                es->dropped_count += 1;
+
+                es->rects[next_ent_index].position = (Vec2){mouse_x, mouse_y};
+                es->rects[next_ent_index].is_dropped = true;
+            }
         }
         return 0;
+
+    case WM_ERASEBKGND:
+        return 1;
 
     }
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -77,7 +97,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     HWND hwnd = CreateWindowEx(
         0,                              // Optional window styles.
         CLASS_NAME,                     // Window class
-        L"Learn to Program Windows",    // Window text
+        L"My-Engine",    // Window text
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
@@ -120,6 +140,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
         // Calculate how much time passed since we were here last time
         float delta_time = (float)(current_time.QuadPart - last_time.QuadPart) / frequency.QuadPart;
+
+        // for debugging: if the delta time is too big, we can just clamp it to a reasonable value (e.g., 0.25 seconds)
+        if (delta_time > 0.25f) {
+            delta_time = TARGET_PHYSICS_DELTA; 
+        }
         // Update last time for the next loop
         last_time = current_time;
 
@@ -137,7 +162,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         // PHYSICS PROCESS
         while (physics_accumulator >= TARGET_PHYSICS_DELTA) {
             engine_update(&app_state.physics, TARGET_PHYSICS_DELTA);
-            
             physics_accumulator -= TARGET_PHYSICS_DELTA;
         }
 

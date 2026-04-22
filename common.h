@@ -15,7 +15,9 @@ typedef struct {
 typedef struct {
     float gravity;
     float floor;
-    Entity* rect;
+    int rect_count;
+    int dropped_count;
+    Entity* rects;
 } EngineState;
 
 typedef struct {
