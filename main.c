@@ -1,10 +1,10 @@
 #include "engine.h"
+#include "mathmy.h"
+#include "win_handlers.h"
 #include <windowsx.h>
 #include <windows.h>
 
-AppState app_state;
-float mouse_x;
-float mouse_y;
+AppState app_state = {0};
 
 void engine_cleanup(EngineState* state) {
     if (state->rects != NULL) {
@@ -22,46 +22,28 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 0;
 
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hwnd, &ps);
-            FillRect(hdc, &ps.rcPaint, (HBRUSH)(COLOR_WINDOW + 1));
-
-            if (app_state.physics.dropped_count < app_state.physics.rect_count) {
-                Rectangle(hdc, (int)mouse_x, (int)mouse_y, (int)mouse_x + 100, (int)mouse_y + 100);
-            }
-            else {
-                DrawText(hdc, L"Out of rectangles:(", -1, &ps.rcPaint, DT_CENTER);
-            }
-
-            for (int i = 0; i < app_state.physics.dropped_count; i++) {
-                Entity* r = &app_state.physics.rects[i];
-                Rectangle(hdc, (int)r->position.x, (int)r->position.y, (int)r->position.x + r->size, (int)r->position.y + r->size);
-            }
-
-            EndPaint(hwnd, &ps);
-        }
+        on_paint(hwnd);
         return 0;
 
     case WM_MOUSEMOVE:
-        {
-            mouse_x = (float)GET_X_LPARAM(lParam);
-            mouse_y = (float)GET_Y_LPARAM(lParam);
-        }
+        on_mousemove(lParam);
         return 0;
 
     case WM_LBUTTONUP:
-        {
-            EngineState* es = &app_state.physics;
-            if (es->dropped_count < es->rect_count) {
-                int next_ent_index = es->dropped_count;
-                es->dropped_count += 1;
-
-                es->rects[next_ent_index].position = (Vec2){mouse_x, mouse_y};
-                es->rects[next_ent_index].is_dropped = true;
-            }
-        }
+        on_leftmouseup(lParam);
         return 0;
+/*
+    case WM_RBUTTONDOWN:
+        EngineState* es = &app_state.physics;
+
+        for (int i = 0; i < es->dropped_count; i++) {
+            Vec2 rect_pos = es->rects[i].position;
+            if (rect_pos )
+        }
+*/
+
+    case WM_RBUTTONUP:
+        return 1;
 
     case WM_ERASEBKGND:
         return 1;
