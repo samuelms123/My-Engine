@@ -40,21 +40,39 @@ void engine_update(EngineState* state, float dt) {
                 rect->velocity.y = 0;
                 continue;
             }
-            // Apply gravity only if rect is not grabbed
-            rect->velocity.y += state->gravity * dt;
-            rect->position.y += rect->velocity.y * dt;
 
-            // Check collision
-            if (rect->position.y + rect->size > state->floor) {
-                rect->position.y = state->floor - rect->size;
-                rect->velocity.y = -rect->velocity.y * rect->bounce_force;
-                
+            // Apply gravity only if rect is not grabbed
+            engine_apply_gravity(rect, state->gravity, dt);
+
+            bool hit_surface = false;
+            float surface_y = state->floor;
+
+            // Check RECT i collision with RECT j
+            for (int j = 0; j < state->dropped_count; j++) {
+                if (j == i) continue;
+                if(engine_entity_is_colliding(rect, &state->rects[j])) {
+                    hit_surface = true;
+                    surface_y = state->rects[j].position.y;
+                    break;
+                }        
+            }
+            
+            // Check floor coll if not collided yet
+            if (!hit_surface && (rect->position.y + rect->size > state->floor)) {
+                hit_surface = true;
+                surface_y = state->floor;
+            }
+
+            if (hit_surface) {
+                engine_apply_bounce(rect, surface_y);
+
                 // Stop when bouncing small enough
                 if (mathmy_abs(rect->velocity.y) < 80.0f) {
                     rect->velocity.y = 0;
                     rect->is_dropped = false;
                 }
             }
+            
         }
     }
 }
@@ -62,4 +80,23 @@ void engine_update(EngineState* state, float dt) {
 void engine_render(HWND hwnd) {
         InvalidateRect(hwnd, NULL, TRUE); 
         UpdateWindow(hwnd);
+}
+
+bool engine_entity_is_colliding(Entity* i, Entity* j) {
+    return (
+        (i->position.y + i->size > j->position.y) &&
+        (i->position.y < j->position.y + j->size) &&
+        (i->position.x + i->size > j->position.x) &&
+        (i->position.x < j->position.x + j->size)
+    );
+}
+
+void engine_apply_gravity(Entity* rect, float gravity, float dt) {
+    rect->velocity.y += gravity * dt;
+    rect->position.y += rect->velocity.y * dt;
+}
+
+void engine_apply_bounce(Entity* rect, float bounce_surface_lvl) {
+    rect->position.y = bounce_surface_lvl - rect->size;
+    rect->velocity.y = -rect->velocity.y * rect->bounce_force;
 }
