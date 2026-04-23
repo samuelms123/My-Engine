@@ -32,57 +32,59 @@ void engine_update(EngineState* state, float dt) {
     if (!state->rects) return;
 
     for (int i = 0; i < state->rect_count; i++) {
+
         Entity* rect = &state->rects[i];
-        if (rect->is_dropped) {
 
-            if (state->grabbed_rect == rect) {
-                rect->is_dropped = false;
-                rect->velocity.y = 0;
-                continue;
-            }
+        //if (rect->is_dropped) {
 
-            // Apply gravity only if rect is not grabbed
-            engine_apply_gravity(rect, state->gravity, dt);
-
-            bool hit_surface = false;
-            float surface_y = state->floor;
-
-            // Check RECT i collision with RECT j
-            for (int j = 0; j < state->dropped_count; j++) {
-                if (j == i) continue;
-                if(engine_entity_is_colliding(rect, &state->rects[j])) {
-                    hit_surface = true;
-                    surface_y = state->rects[j].position.y;
-                    break;
-                }        
-            }
-            
-            // Check floor coll if not collided yet
-            if (!hit_surface && (rect->position.y + rect->size > state->floor)) {
-                hit_surface = true;
-                surface_y = state->floor;
-            }
-
-            if (hit_surface) {
-                engine_apply_bounce(rect, surface_y);
-
-                // Stop when bouncing small enough
-                if (mathmy_abs(rect->velocity.y) < 80.0f) {
-                    rect->velocity.y = 0;
-                    rect->is_dropped = false;
-                }
-            }
-            
+        if (state->grabbed_rect == rect) {
+            rect->is_dropped = false;
+            rect->velocity.y = 0;
+            continue;
         }
+
+        // Apply gravity only if rect is not grabbed
+        engine_apply_gravity(rect, state->gravity, dt);
+
+        bool hit_surface = false;
+        float surface_y = state->floor;
+
+        // Check RECT i collision with RECT j
+        for (int j = 0; j < state->dropped_count; j++) {
+            if (j == i) continue;
+            if(engine_is_entity_colliding(rect, &state->rects[j])) {
+                hit_surface = true;
+                surface_y = state->rects[j].position.y;
+                break;
+            }        
+        }
+        
+        // Check floor coll if not collided yet
+        if (!hit_surface && (rect->position.y + rect->size > state->floor)) {
+            hit_surface = true;
+            surface_y = state->floor;
+        }
+
+        if (hit_surface) {
+            engine_apply_bounce(rect, surface_y);
+
+            // Stop when bouncing small enough
+            if (mathmy_abs(rect->velocity.y) < 80.0f) {
+                rect->velocity.y = 0;
+                rect->is_dropped = false;
+            }
+        }
+        
     }
 }
+//}
 
 void engine_render(HWND hwnd) {
         InvalidateRect(hwnd, NULL, TRUE); 
         UpdateWindow(hwnd);
 }
 
-bool engine_entity_is_colliding(Entity* i, Entity* j) {
+bool engine_is_entity_colliding(Entity* i, Entity* j) {
     return (
         (i->position.y + i->size > j->position.y) &&
         (i->position.y < j->position.y + j->size) &&
@@ -99,4 +101,8 @@ void engine_apply_gravity(Entity* rect, float gravity, float dt) {
 void engine_apply_bounce(Entity* rect, float bounce_surface_lvl) {
     rect->position.y = bounce_surface_lvl - rect->size;
     rect->velocity.y = -rect->velocity.y * rect->bounce_force;
+}
+
+bool is_entity_on_surface(Entity* rect) {
+
 }
