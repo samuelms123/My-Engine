@@ -11,6 +11,7 @@ void engine_init(EngineState* state) {
     state->rect_count = 5;
     state->dropped_count = 0;
     state->grabbed_rect = NULL;
+    state->grabbed_rect_offset = (Vec2){0.0f, 0.0f};
     state->rects = malloc(sizeof(Entity) * state->rect_count);
 
     if (state->rects == NULL) {
@@ -34,8 +35,6 @@ void engine_update(EngineState* state, float dt) {
     for (int i = 0; i < state->rect_count; i++) {
 
         Entity* rect = &state->rects[i];
-
-        //if (rect->is_dropped) {
 
         if (state->grabbed_rect == rect) {
             rect->is_dropped = false;
@@ -77,7 +76,6 @@ void engine_update(EngineState* state, float dt) {
         
     }
 }
-//}
 
 void engine_render(HWND hwnd) {
         InvalidateRect(hwnd, NULL, TRUE); 
@@ -101,8 +99,4 @@ void engine_apply_gravity(Entity* rect, float gravity, float dt) {
 void engine_apply_bounce(Entity* rect, float bounce_surface_lvl) {
     rect->position.y = bounce_surface_lvl - rect->size;
     rect->velocity.y = -rect->velocity.y * rect->bounce_force;
-}
-
-bool is_entity_on_surface(Entity* rect) {
-
 }

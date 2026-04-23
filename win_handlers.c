@@ -33,8 +33,9 @@ void on_mousemove(LPARAM lp) {
     Entity* grabbed_rect = app_state.physics.grabbed_rect;
 
     if (grabbed_rect) {
-        grabbed_rect->position.x = app_state.mouse_pos.x;
-        grabbed_rect->position.y = app_state.mouse_pos.y;
+
+        grabbed_rect->position.x = app_state.mouse_pos.x - app_state.physics.grabbed_rect_offset.x;
+        grabbed_rect->position.y = app_state.mouse_pos.y - app_state.physics.grabbed_rect_offset.y;
     }
 }
 
@@ -60,7 +61,10 @@ void on_rightmousedown(LPARAM lparam) {
         bool inside_x = (rect->position.x < mouse_pos.x) && (rect->position.x + rect->size > mouse_pos.x);
 
         if (inside_x && inside_y) {
+            float offset_x = app_state.mouse_pos.x - rect->position.x;
+            float offset_y = app_state.mouse_pos.y - rect->position.y;
             app_state.physics.grabbed_rect = rect;
+            app_state.physics.grabbed_rect_offset = (Vec2){offset_x, offset_y};
             break;
         }
     }
@@ -73,4 +77,5 @@ void on_rightmouseup(LPARAM lparam) {
     
     grabbed_rect->is_dropped = true;
     app_state.physics.grabbed_rect = NULL;
+    app_state.physics.grabbed_rect_offset = (Vec2){0.0f, 0.0f};
 }

@@ -18,6 +18,7 @@ typedef struct {
     int rect_count;
     int dropped_count;
     Entity* grabbed_rect;
+    Vec2 grabbed_rect_offset;
     Entity* rects;
 } EngineState;
 
