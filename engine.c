@@ -10,6 +10,7 @@ void engine_init(EngineState* state) {
     state->gravity = 1150.0f;
     state->rect_count = 5;
     state->dropped_count = 0;
+    state->grabbed_rect = NULL;
     state->rects = malloc(sizeof(Entity) * state->rect_count);
 
     if (state->rects == NULL) {
@@ -33,7 +34,13 @@ void engine_update(EngineState* state, float dt) {
     for (int i = 0; i < state->rect_count; i++) {
         Entity* rect = &state->rects[i];
         if (rect->is_dropped) {
-            // Apply gravity
+
+            if (state->grabbed_rect == rect) {
+                rect->is_dropped = false;
+                rect->velocity.y = 0;
+                continue;
+            }
+            // Apply gravity only if rect is not grabbed
             rect->velocity.y += state->gravity * dt;
             rect->position.y += rect->velocity.y * dt;
 
@@ -47,12 +54,11 @@ void engine_update(EngineState* state, float dt) {
                     rect->velocity.y = 0;
                     rect->is_dropped = false;
                 }
+            }
         }
-
-
-    }
     }
 }
+
 void engine_render(HWND hwnd) {
         InvalidateRect(hwnd, NULL, TRUE); 
         UpdateWindow(hwnd);

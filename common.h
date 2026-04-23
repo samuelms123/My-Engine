@@ -17,6 +17,7 @@ typedef struct {
     float floor;
     int rect_count;
     int dropped_count;
+    Entity* grabbed_rect;
     Entity* rects;
 } EngineState;
 

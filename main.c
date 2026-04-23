@@ -32,18 +32,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_LBUTTONUP:
         on_leftmouseup(lParam);
         return 0;
-/*
-    case WM_RBUTTONDOWN:
-        EngineState* es = &app_state.physics;
 
-        for (int i = 0; i < es->dropped_count; i++) {
-            Vec2 rect_pos = es->rects[i].position;
-            if (rect_pos )
-        }
-*/
+    case WM_RBUTTONDOWN:
+        on_rightmousedown(lParam);
+        return 0;
 
     case WM_RBUTTONUP:
-        return 1;
+        on_rightmouseup(lParam);
+        return 0;
 
     case WM_ERASEBKGND:
         return 1;
