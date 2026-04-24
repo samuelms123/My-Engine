@@ -5,6 +5,13 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+enum collision_side {
+    COLLISION_TOP,
+    COLLISION_BOTTOM,
+    COLLISION_LEFT,
+    COLLISION_RIGHT
+};
+
 void engine_init(EngineState* state) {
     state->floor = 960.0f;
     state->gravity = 1150.0f;
@@ -57,13 +64,23 @@ void engine_update(EngineState* state, float dt) {
                 hit_surface = true;
                 Entity* collided_rect = &state->rects[j];
 
-                if (collided_rect->velocity.y != 0) {
-                    hit_moving_rect = true;
-                    engine_apply_1d_elastic_collision(rect, collided_rect);
+
+                hit_moving_rect = true;
+
+                switch (engine_resolve_collision_side(rect, collided_rect))
+                {
+                case COLLISION_TOP:
+                    rect->position.y = collided_rect->position.y - rect->size;
+                    break;
+                case COLLISION_BOTTOM:
+                    rect->position.y = collided_rect->position.y + collided_rect->size;
+                    break;
+                
+                default:
+                    break;
                 }
 
-                surface_y = state->rects[j].position.y;
-                break;
+                engine_apply_1d_elastic_collision(rect, collided_rect);
             }        
         }
         
@@ -74,7 +91,7 @@ void engine_update(EngineState* state, float dt) {
         }
 
         if (hit_surface && !hit_moving_rect) {
-            engine_apply_bounce(rect, surface_y);
+            engine_apply_1d_floor_elastic_collision(rect, surface_y);
 
             // Stop when bouncing small enough
             if (mathmy_abs(rect->velocity.y) < 80.0f) {
@@ -105,7 +122,7 @@ void engine_apply_gravity(Entity* rect, float gravity, float dt) {
     rect->position.y += rect->velocity.y * dt;
 }
 
-void engine_apply_bounce(Entity* rect, float bounce_surface_lvl) {
+void engine_apply_1d_floor_elastic_collision(Entity* rect, float bounce_surface_lvl) {
     rect->position.y = bounce_surface_lvl - rect->size;
     rect->velocity.y = -rect->velocity.y * rect->bounce_force;
 }
@@ -117,12 +134,17 @@ void engine_apply_1d_elastic_collision(Entity* rect1, Entity* rect2) {
     float m2 = rect2->mass;
     float total_mass = m1+m2;
 
-    if (m1 == m2) {
-        rect1->velocity.y = (2.0f * m2 * v2) / total_mass;
-        rect2->velocity.y = (2.0f * m1 * v1) / total_mass;
-    }
+    rect1->velocity.y = ((m1 - m2) * v1 + (2.0f * m2 * v2)) / total_mass;
+    rect2->velocity.y = ((m2 - m1) * v2 + (2.0f * m1 * v1)) / total_mass;
+}
+
+enum collision_side engine_resolve_collision_side(Entity* rect, Entity* collided_rect) {
+    if (rect->position.y < collided_rect->position.y) {
+        return COLLISION_TOP;
+    } 
     else {
-        rect1->velocity.y = ((m1 - m2) * v1 + (2.0f * m2 * v2)) / total_mass;
-        rect2->velocity.y = ((m2 - m1) * v2 + (2.0f * m1 * v1)) / total_mass;
+        return COLLISION_BOTTOM;
     }
 }
+
+
