@@ -52,8 +52,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     // init app state  --Refactor to master "app_init"--
     engine_init(&app_state.physics);
-    app_state.window_w = 600;
-    app_state.window_h = 600;
+    app_state.window_w = 1000;
+    app_state.window_h = 1000;
     app_state.mouse_pos = (Vec2){0, 0};
     //
 
@@ -79,7 +79,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
-        CW_USEDEFAULT, CW_USEDEFAULT,  app_state.window_w, app_state.window_h,
+        400, 10,  app_state.window_w, app_state.window_h,
 
         NULL,       // Parent window    
         NULL,       // Menu
@@ -119,10 +119,11 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         // Calculate how much time passed since we were here last time
         float delta_time = (float)(current_time.QuadPart - last_time.QuadPart) / frequency.QuadPart;
 
-        // for debugging: if the delta time is too big, we can just clamp it to a reasonable value (e.g., 0.25 seconds)
+        /*for debugging: if the delta time is too big, we can just clamp it to a reasonable value (e.g., 0.25 seconds)
         if (delta_time > 0.25f) {
             delta_time = TARGET_PHYSICS_DELTA; 
         }
+        */ 
         // Update last time for the next loop
         last_time = current_time;
 

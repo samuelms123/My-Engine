@@ -44,3 +44,7 @@ float  mathmy_abs(float a) {
     }
     return a;
 }
+
+float mathmy_pow(float base, float power) {
+    return base * power;
+}

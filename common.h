@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 typedef struct {
+    float mass;
     float size;
     Vec2 velocity;
     Vec2 position;
