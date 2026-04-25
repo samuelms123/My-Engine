@@ -15,7 +15,7 @@ enum collision_side {
 void engine_init(EngineState* state) {
     state->floor = 960.0f;
     state->gravity = 1150.0f;
-    state->rect_count = 5;
+    state->rect_count = 20;
     state->dropped_count = 0;
     state->grabbed_rect = NULL;
     state->grabbed_rect_offset = (Vec2){0.0f, 0.0f};
@@ -40,7 +40,7 @@ void engine_init(EngineState* state) {
 void engine_update(EngineState* state, float dt) {
     if (!state->rects) return;
 
-    for (int i = 0; i < state->rect_count; i++) {
+    for (int i = 0; i < state->dropped_count; i++) {
 
         Entity* rect = &state->rects[i];
 
@@ -53,24 +53,22 @@ void engine_update(EngineState* state, float dt) {
         // Apply gravity only if rect is not grabbed
         engine_apply_gravity(rect, state->gravity, dt);
 
-        bool hit_surface = false;
-        bool hit_moving_rect = false;
+        bool collided_with_rect = false;
+        bool collided_with_ground = false;
         float surface_y = state->floor;
-
+        
         // Check RECT i collision with RECT j
         for (int j = 0; j < state->dropped_count; j++) {
-            if (j == i) continue;
+            if (j <= i) continue;  // j <= i for not double check
+
             if(engine_is_entity_colliding(rect, &state->rects[j])) {
-                hit_surface = true;
+                collided_with_rect = true;
                 Entity* collided_rect = &state->rects[j];
-
-
-                hit_moving_rect = true;
 
                 switch (engine_resolve_collision_side(rect, collided_rect))
                 {
                 case COLLISION_TOP:
-                    rect->position.y = collided_rect->position.y - rect->size;
+                    rect->position.y = collided_rect->position.y + rect->size;
                     break;
                 case COLLISION_BOTTOM:
                     rect->position.y = collided_rect->position.y + collided_rect->size;
@@ -85,12 +83,12 @@ void engine_update(EngineState* state, float dt) {
         }
         
         // Check floor coll if not collided yet
-        if (!hit_surface && (rect->position.y + rect->size > state->floor)) {
-            hit_surface = true;
+        if (!collided_with_rect && (rect->position.y + rect->size > state->floor)) {
+            collided_with_ground = true;
             surface_y = state->floor;
         }
 
-        if (hit_surface && !hit_moving_rect) {
+        if (collided_with_ground && !collided_with_rect) {
             engine_apply_1d_floor_elastic_collision(rect, surface_y);
 
             // Stop when bouncing small enough
