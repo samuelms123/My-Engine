@@ -1,17 +1,12 @@
-#include "engine.h"
-#include "mathmy.h"
-#include "win_handlers.h"
+#include "../include/myngn_physics/myngn_math.h"
+#include "../include/myngn_physics/myngn_world.h"
+#include "win32_handlers.h"
+#include "../include/myngn_physics/myngn_world.h"
 #include <windowsx.h>
 #include <windows.h>
+#include <stdbool.h>
 
-AppState app_state = {0};
-
-void engine_cleanup(EngineState* state) {
-    if (state->rects != NULL) {
-        free(state->rects);
-        state->rects = NULL;
-    }
-}
+myWorld* world = NULL;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -25,6 +20,44 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         on_paint(hwnd);
         return 0;
 
+    case WM_KEYDOWN:
+        if (wParam == 0x57) { // W
+            on_key_w_down();
+            return 0;
+        }
+        else if (wParam == 0x41) { // A
+            on_key_a_down();
+            return 0;
+        }
+        else if (wParam == 0x53) { // S
+            on_key_s_down();
+            return 0;
+        }
+        else if (wParam == 0x44) { // D
+            on_key_d_down();
+            return 0;
+        }
+        return 0;
+
+    case WM_KEYUP:
+            if (wParam == 0x57) { // W
+                on_no_press();
+                return 0;
+            }
+            else if (wParam == 0x41) { // A
+                on_no_press();
+                return 0;
+            }
+            else if (wParam == 0x53) { // S
+                on_no_press();
+                return 0;
+            }
+            else if (wParam == 0x44) { // D
+                on_no_press();
+                return 0;
+            }
+            return 0;
+/*
     case WM_MOUSEMOVE:
         on_mousemove(lParam);
         return 0;
@@ -40,7 +73,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_RBUTTONUP:
         on_rightmouseup(lParam);
         return 0;
-
+*/
     case WM_ERASEBKGND:
         return 1;
 
@@ -50,12 +83,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    // init app state  --Refactor to master "app_init"--
-    engine_init(&app_state.physics);
-    app_state.window_w = 1000;
-    app_state.window_h = 1000;
-    app_state.mouse_pos = (Vec2){0, 0};
-    //
+    world = my_World_Create();
+    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){700.0f, 100.0f}, false);
+    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){400.0f, 100.0f}, false);
+    // app_state.mouse_pos = (myVec2){0, 0};
 
 
     // Register the window class.
@@ -79,7 +110,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         WS_OVERLAPPEDWINDOW,            // Window style
 
         // Size and position
-        400, 10,  app_state.window_w, app_state.window_h,
+        400, 10,  1000, 1000,
 
         NULL,       // Parent window    
         NULL,       // Menu
@@ -119,11 +150,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         // Calculate how much time passed since we were here last time
         float delta_time = (float)(current_time.QuadPart - last_time.QuadPart) / frequency.QuadPart;
 
-        /*for debugging: if the delta time is too big, we can just clamp it to a reasonable value (e.g., 0.25 seconds)
         if (delta_time > 0.25f) {
             delta_time = TARGET_PHYSICS_DELTA; 
         }
-        */ 
         // Update last time for the next loop
         last_time = current_time;
 
@@ -140,17 +169,18 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
         // PHYSICS PROCESS
         while (physics_accumulator >= TARGET_PHYSICS_DELTA) {
-            engine_update(&app_state.physics, TARGET_PHYSICS_DELTA);
+            my_World_Step(world, TARGET_PHYSICS_DELTA);
             physics_accumulator -= TARGET_PHYSICS_DELTA;
         }
 
         // RENDERING PROCESS
         if (render_accumulator >= TARGET_RENDER_DELTA) {
-            engine_render(hwnd);
+            InvalidateRect(hwnd, NULL, TRUE); 
+            UpdateWindow(hwnd);
             render_accumulator -= TARGET_RENDER_DELTA; 
         }
 
     }
-    engine_cleanup(&app_state.physics);
+    my_World_Free(world);
     return (int)msg.wParam;
 }
