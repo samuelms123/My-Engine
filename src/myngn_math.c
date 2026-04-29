@@ -28,8 +28,16 @@ myVec2 my_Math_Inverse(myVec2 v) {
     return v;
 }
 
-float my_Math_SquaredLength(myVec2 v) {
-    return (v.x * v.x) + (v.y * v.y);
+myVec2 my_Math_Transform(myVec2 v, myTransform transform) {
+    // rotate
+    float x2 = (transform.q.cos * v.x) - (transform.q.sin * v.y);
+    float y2 = (transform.q.sin * v.x) + (transform.q.cos * v.y);
+    
+    // translate
+    x2 += transform.p.x;
+    y2 += transform.p.y;
+
+    return (myVec2){x2, y2};
 }
 
 myVec2 my_Math_Norm(myVec2 v) {
@@ -39,6 +47,10 @@ myVec2 my_Math_Norm(myVec2 v) {
         return (myVec2){ v.x / length, v.y / length };
     }
     return (myVec2){ 0, 0 };
+}
+
+float my_Math_SquaredLength(myVec2 v) {
+    return (v.x * v.x) + (v.y * v.y);
 }
 
 float my_Math_Dot(myVec2 a, myVec2 b) {
@@ -57,4 +69,11 @@ float my_Math_Distance(myVec2 a, myVec2 b) {
     float dy = a.y - b.y;
 
     return sqrtf(dx * dx + dy * dy);
+}
+
+float my_Math_SquaredDistance(myVec2 a, myVec2 b) {
+    float dx = a.x - b.x;
+    float dy = a.y - b.y;
+
+    return (dx * dx) + (dy * dy);
 }

@@ -45,6 +45,7 @@ void my_World_Free(myWorld* world) {
 
 void my_World_Step(myWorld* world, float delta_time) {
 
+    // Linear motion and rotations
     for (int i = 0; i < world->body_count; i++) {
         myRigidBody* a_body =  world->bodies[i];
 
@@ -55,8 +56,17 @@ void my_World_Step(myWorld* world, float delta_time) {
         pos.y += vel.y * delta_time;
 
         my_RigidBody_SetPosition(a_body, pos);
+
+        float angular_velocity = my_RigidBody_GetAngularVelocity(a_body);
+        if (angular_velocity != 0.0f) {
+            float rotation_amount = angular_velocity * delta_time;
+            my_RigidBody_Rotate(a_body, rotation_amount);
+        }
     }
 
+
+
+    // Collisions
     for (int i = 0; i < world->body_count; i++) {
         for (int j = 0; j < world->body_count; j++) {
             if (i <= j) continue;

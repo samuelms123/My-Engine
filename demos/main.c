@@ -37,6 +37,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
             on_key_d_down();
             return 0;
         }
+        else if (wParam == 0x20) { // space
+            on_key_space_down();
+            return 0;
+        }
         return 0;
 
     case WM_KEYUP:
@@ -53,6 +57,10 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
                 return 0;
             }
             else if (wParam == 0x44) { // D
+                on_no_press();
+                return 0;
+            }
+            else if (wParam == 0x20) { // space
                 on_no_press();
                 return 0;
             }
@@ -84,8 +92,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     world = my_World_Create();
-    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){700.0f, 100.0f}, false);
+    my_RigidBody_CreateBoxBody(world, 50.0f, 50.0f, 1.0f, 1.0f, (myVec2){550.0f, 100.0f}, false);
+    /*
+    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){600.0f, 100.0f}, false);
+    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){900.0f, 100.0f}, false);
+    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){100.0f, 100.0f}, false);
     my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){400.0f, 100.0f}, false);
+    */
     // app_state.mouse_pos = (myVec2){0, 0};
 
 

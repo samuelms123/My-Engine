@@ -8,6 +8,7 @@ void on_key_w_down();
 void on_key_a_down();
 void on_key_s_down();
 void on_key_d_down();
+void on_key_space_down();
 void on_no_press();
 /*
 void on_mousemove(LPARAM lparam);

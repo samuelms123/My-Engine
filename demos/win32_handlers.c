@@ -6,6 +6,7 @@
 
 extern myWorld* world;
 const float SPEED = 150.0f;
+const float ANGULAR_SPEED = 5.0f;
 
 void on_paint(HWND hwnd) {
     PAINTSTRUCT ps;
@@ -39,6 +40,20 @@ void on_paint(HWND hwnd) {
                         (int)(pos.x + r),
                         (int)(pos.y + r)
                     );
+                }
+
+                if (my_RigidBody_GetType(body) == MY_RIGIDBODY_BOX) {
+                    myVec2* vertices = my_RigidBody_GetTransformedVertices(body);
+                    int count = my_RigidBody_GetVertexCount(body);
+
+                    MoveToEx(memDC, (int)vertices[0].x, (int)vertices[0].y, NULL);
+
+                    for (int v = 1; v < count; v++) {
+                        LineTo(memDC, (int)vertices[v].x, (int)vertices[v].y);
+                    }
+
+                    // 4. Draw one final line back to the first corner to close the shape!
+                    LineTo(memDC, (int)vertices[0].x, (int)vertices[0].y);
                 }
             }
         }
@@ -75,8 +90,8 @@ void on_key_s_down() {
     myRigidBody* body =  my_World_GetBody(world, 0);
     if (body != NULL) {
         myVec2 vel = my_RigidBody_GetVelocity(body);
-        vel.y = SPEED;
         vel.x = 0;
+        vel.y = SPEED;
         my_RigidBody_SetVelocity(body, vel);
     }
 }
@@ -89,10 +104,22 @@ void on_key_d_down() {
         my_RigidBody_SetVelocity(body, vel);
     }
 }
+
+void on_key_space_down() {
+    myRigidBody* body =  my_World_GetBody(world, 0);
+
+    if (body != NULL) {
+        float vel = my_RigidBody_GetAngularVelocity(body);
+        vel = ANGULAR_SPEED;
+        my_RigidBody_SetAngularVelocity(body, vel);
+    }
+}
+
 void on_no_press() {
     myRigidBody* body =  my_World_GetBody(world, 0);
     if (body != NULL) {
         my_RigidBody_SetVelocity(body, (myVec2){0.0f, 0.0f});
+        my_RigidBody_SetAngularVelocity(body, 0.0f);
     }
 }
 /*;
