@@ -25,32 +25,11 @@ bool my_Collision_CheckCircles(myRigidBody* a, myRigidBody* b, myContact* out_co
     return true;
 }
 /*
-typedef struct myRigidBody {
-    myVec2 position; // center of mass position
-    myVec2 velocity;
-    myTransform transform;
-    myRigidBodyType type;
-    myVec2 vertices[MY_MAX_VERTICES];
-    myVec2 transformed_vertices[MY_MAX_VERTICES];
-    int vertex_count;
-    float angular_velocity;
-    float width;
-    float height;
-    float rotation; // rad
-    float radius;
-    float density;
-    float restitution;
-    float area;
-    float mass;
-    float inv_mass;
-    bool is_static;
-    bool is_transform_update_required;
-} myRigidBody;
 
-    body->vertices[0] = (myVec2){xh, yh}; // top right
-    body->vertices[1] = (myVec2){-xh, yh}; // top left
-    body->vertices[2] = (myVec2){-xh, -yh}; // bot left
-    body->vertices[3] = (myVec2){xh, -yh}; // bot right
+    typedef struct myContact {
+    myVec2 normal;
+    float penetration;
+} myContact;
     */
 
 myProjectionResult my_Collisions_ProjectVertices(myVec2* vertices, myVec2 test_axis, int vertices_lenght) {
@@ -74,6 +53,9 @@ bool my_Collision_CheckPolygons(myRigidBody* a, myRigidBody* b, myContact* out_c
     myVec2* vertices_b = my_RigidBody_GetTransformedVertices(b);
     int vertex_b_count = my_RigidBody_GetVertexCount(b);
 
+    out_contact->penetration = FLT_MAX;
+    out_contact->normal = (myVec2){0.0f, 0.0f};
+
     for (int i = 0; i < vertex_a_count; i++) {
         myVec2 edge = my_Math_Sub(vertices_a[(i + 1) % vertex_a_count ], vertices_a[i]);
         myVec2 test_axis = my_Math_Norm((myVec2){edge.y, -edge.x}); // normalized normal = test axis
@@ -83,11 +65,22 @@ bool my_Collision_CheckPolygons(myRigidBody* a, myRigidBody* b, myContact* out_c
 
         if (projectionResult_a.max < projectionResult_b.min || projectionResult_b.max < projectionResult_a.min) {
             return false;
-        }  
+        }
+
+        float pen_1 = projectionResult_a.max - projectionResult_b.min;
+        float pen_2 = projectionResult_b.max - projectionResult_a.min;
+        float smaller_pen = (pen_1 < pen_2) ? pen_1 : pen_2;
+        
+        if (smaller_pen < out_contact->penetration ) { 
+            out_contact->penetration = smaller_pen;
+            out_contact->normal = test_axis;
+        }
+
+
     }
 
     for (int i = 0; i < vertex_b_count; i++) {
-        myVec2 edge = my_Math_Sub(vertices_b[(i + 1) % vertex_a_count ], vertices_b[i]);
+        myVec2 edge = my_Math_Sub(vertices_b[(i + 1) % vertex_b_count ], vertices_b[i]);
         myVec2 test_axis = my_Math_Norm((myVec2){edge.y, -edge.x}); // normalized normal = test axis
 
         myProjectionResult projectionResult_a = my_Collisions_ProjectVertices(vertices_a, test_axis, vertex_a_count);
@@ -95,9 +88,30 @@ bool my_Collision_CheckPolygons(myRigidBody* a, myRigidBody* b, myContact* out_c
 
         if (projectionResult_a.max <= projectionResult_b.min || projectionResult_b.max <= projectionResult_a.min) {
             return false;
-        }  
+        }
+
+        float pen_1 = projectionResult_a.max - projectionResult_b.min;
+        float pen_2 = projectionResult_b.max - projectionResult_a.min;
+        float smaller_pen = (pen_1 < pen_2) ? pen_1 : pen_2;
+        
+        if (smaller_pen < out_contact->penetration ) { 
+            out_contact->penetration = smaller_pen;
+            out_contact->normal = test_axis;
+        }
+
     }
 
-    return true; // todo: fill the contact struct
+    myVec2 center_a = my_RigidBody_GetPosition(a);
+    myVec2 center_b = my_RigidBody_GetPosition(b);
+    myVec2 dir = my_Math_Sub(center_b, center_a);
+
+    if (my_Math_Dot(dir, out_contact->normal) < 0.0f) {
+        out_contact->normal.x = -out_contact->normal.x;
+        out_contact->normal.y = -out_contact->normal.y;
+    }
+
+
+
+    return true;
 }
 

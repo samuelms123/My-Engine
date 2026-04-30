@@ -13,6 +13,7 @@ typedef struct myRigidBody {
     myRigidBodyType type;
     myVec2 vertices[MY_MAX_VERTICES];
     myVec2 transformed_vertices[MY_MAX_VERTICES];
+    myVec2 arithmetic_mean;
     int vertex_count;
     float angular_velocity;
     float width;

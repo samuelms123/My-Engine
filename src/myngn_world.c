@@ -80,7 +80,7 @@ void my_World_Step(myWorld* world, float delta_time) {
 
                     if (i_type == MY_RIGIDBODY_BOX && j_type == MY_RIGIDBODY_BOX) {
                         if(my_Collision_CheckPolygons(a_body, b_body, &contact)) {
-                            OutputDebugString(L"Collision!");
+                            my_Solver_ResolveCollision(a_body, b_body, &contact);
                         }
                     }
 
