@@ -42,7 +42,8 @@ void on_paint(HWND hwnd) {
                     );
                 }
 
-                if (my_RigidBody_GetType(body) == MY_RIGIDBODY_BOX) {
+                // separate later
+                if ((my_RigidBody_GetType(body) == MY_RIGIDBODY_BOX) || (my_RigidBody_GetType(body) == MY_RIGIDBODY_POLYGON)) {
                     myVec2* vertices = my_RigidBody_GetTransformedVertices(body);
                     int count = my_RigidBody_GetVertexCount(body);
 

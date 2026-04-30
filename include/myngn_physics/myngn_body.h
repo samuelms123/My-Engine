@@ -9,12 +9,14 @@ typedef struct myRigidBody myRigidBody;
 
 typedef enum myRigidBodyType {
     MY_RIGIDBODY_CIRCLE,
-    MY_RIGIDBODY_BOX
+    MY_RIGIDBODY_BOX,
+    MY_RIGIDBODY_POLYGON
 } myRigidBodyType;
 
 
 void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, float restitution, myVec2 position, bool is_static);
 void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float density, float restitution, myVec2 position, bool is_static);
+void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex_count ,float density, float restitution, myVec2 position, bool is_static);
 myRigidBodyType my_RigidBody_GetType(myRigidBody* body);
 
 myVec2 my_RigidBody_GetPosition(myRigidBody* body);
@@ -33,5 +35,9 @@ myVec2* my_RigidBody_GetTransformedVertices(myRigidBody* body);
 int my_RigidBody_GetVertexCount(myRigidBody* body);
 
 void my_RigidBody_Move(myRigidBody* body, myVec2 amount);
+
+// for now
+
+myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count);
 
 #endif

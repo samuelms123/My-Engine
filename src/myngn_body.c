@@ -85,6 +85,38 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
     my_World_AddBody(world, body);
 }
 
+void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex_count ,float density, float restitution, myVec2 position, bool is_static) {
+
+    if (vertex_count < 3 || vertex_count > MY_MAX_VERTICES) {
+        return;
+    }
+    myRigidBody* body = (myRigidBody*)malloc(sizeof(myRigidBody));
+
+    body->position = position;
+    body->velocity = (myVec2) {0.0f, 0.0f};
+    body->type = MY_RIGIDBODY_POLYGON;
+    body->density = density;
+    body->restitution = restitution;
+    // For now, setting a dummy area so mass doesn't become zero
+    body->area = 10.0f;
+    body->mass = body->area * density;
+    body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
+    body->is_static = is_static;
+    body->vertex_count = vertex_count;
+    body->is_transform_update_required = true;
+    body->angular_velocity = 0.0f;
+
+    // for now
+    body->arithmetic_mean = my_RigidBody_CalculateArithmeticMean(vertices, vertex_count);
+
+    for (int i = 0; i < vertex_count; i++) {
+        body->vertices[i].x = vertices[i].x - body->arithmetic_mean.x;
+        body->vertices[i].y = vertices[i].y - body->arithmetic_mean.y;
+    }
+
+    my_World_AddBody(world, body);
+}
+
 myRigidBodyType my_RigidBody_GetType(myRigidBody* body) {return body->type;}
 
 myVec2 my_RigidBody_GetPosition(myRigidBody* body) {return body->position;}
@@ -147,4 +179,16 @@ myVec2* my_RigidBody_GetTransformedVertices(myRigidBody* body) {
     }
 
     return body->transformed_vertices;
+}
+
+myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count) {
+    float x_total = 0.0f;
+    float y_total = 0.0f;
+
+    for (int i = 0; i < vertex_count; i++) {
+        x_total += vertices[i].x;
+        y_total += vertices[i].y;
+    }
+
+    return (myVec2){x_total / (float)vertex_count, y_total / (float)vertex_count};
 }

@@ -24,13 +24,6 @@ bool my_Collision_CheckCircles(myRigidBody* a, myRigidBody* b, myContact* out_co
 
     return true;
 }
-/*
-
-    typedef struct myContact {
-    myVec2 normal;
-    float penetration;
-} myContact;
-    */
 
 myProjectionResult my_Collisions_ProjectVertices(myVec2* vertices, myVec2 test_axis, int vertices_lenght) {
     myProjectionResult projectionResult;
