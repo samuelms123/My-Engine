@@ -52,7 +52,6 @@ void on_paint(HWND hwnd) {
                         LineTo(memDC, (int)vertices[v].x, (int)vertices[v].y);
                     }
 
-                    // 4. Draw one final line back to the first corner to close the shape!
                     LineTo(memDC, (int)vertices[0].x, (int)vertices[0].y);
                 }
             }

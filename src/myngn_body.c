@@ -112,6 +112,11 @@ void my_RigidBody_Rotate(myRigidBody* body, float amount) {
     body->is_transform_update_required = true;
 }
 
+void my_RigidBody_Move(myRigidBody* body, myVec2 amount) {
+    body->position = my_Math_Add(body->position, amount);
+    body->is_transform_update_required = true;
+}
+
 float my_RigidBody_GetAngularVelocity(myRigidBody* body) {
     return body->angular_velocity;
 }

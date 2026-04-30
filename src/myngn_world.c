@@ -69,6 +69,27 @@ void my_World_Step(myWorld* world, float delta_time) {
     // Collisions
     for (int i = 0; i < world->body_count; i++) {
         for (int j = 0; j < world->body_count; j++) {
+                    if (i <= j) continue;
+                    myRigidBody* a_body =  world->bodies[i];
+                    myRigidBody* b_body = world->bodies[j];
+
+                    myRigidBodyType i_type = my_RigidBody_GetType(a_body);
+                    myRigidBodyType j_type = my_RigidBody_GetType(b_body);
+
+                    myContact contact;
+
+                    if (i_type == MY_RIGIDBODY_BOX && j_type == MY_RIGIDBODY_BOX) {
+                        if(my_Collision_CheckPolygons(a_body, b_body, &contact)) {
+                            OutputDebugString(L"Collision!");
+                        }
+                    }
+
+                }
+    }
+
+    /*
+    for (int i = 0; i < world->body_count; i++) {
+        for (int j = 0; j < world->body_count; j++) {
             if (i <= j) continue;
             myRigidBody* a_body =  world->bodies[i];
             myRigidBody* b_body = world->bodies[j];
@@ -86,6 +107,7 @@ void my_World_Step(myWorld* world, float delta_time) {
 
         }
     }
+        */
 }
 
 int my_World_GetBodyCount(myWorld* world) {

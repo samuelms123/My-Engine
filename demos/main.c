@@ -93,6 +93,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 {
     world = my_World_Create();
     my_RigidBody_CreateBoxBody(world, 50.0f, 50.0f, 1.0f, 1.0f, (myVec2){550.0f, 100.0f}, false);
+    my_RigidBody_CreateBoxBody(world, 50.0f, 50.0f, 1.0f, 1.0f, (myVec2){350.0f, 100.0f}, false);
     /*
     my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){600.0f, 100.0f}, false);
     my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){900.0f, 100.0f}, false);

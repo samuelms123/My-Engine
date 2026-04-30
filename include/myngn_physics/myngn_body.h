@@ -32,4 +32,6 @@ void my_RigidBody_Rotate(myRigidBody* body, float amount);
 myVec2* my_RigidBody_GetTransformedVertices(myRigidBody* body);
 int my_RigidBody_GetVertexCount(myRigidBody* body);
 
+void my_RigidBody_Move(myRigidBody* body, myVec2 amount);
+
 #endif
