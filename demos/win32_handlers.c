@@ -5,8 +5,8 @@
 #include "../include/myngn_physics/myngn_math.h"
 
 extern myWorld* world;
-const float SPEED = 150.0f;
-const float ANGULAR_SPEED = 5.0f;
+const float SPEED = 350.0f;
+const float ANGULAR_SPEED = 10.0f;
 
 void on_paint(HWND hwnd) {
     PAINTSTRUCT ps;

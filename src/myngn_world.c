@@ -5,7 +5,7 @@
 
 struct myWorld {
     // myVec2 gravity;
-    myRigidBody** bodies; // An array of body pointers
+    myRigidBody** bodies;
 
     int body_count;
     int body_capacity;
@@ -69,44 +69,63 @@ void my_World_Step(myWorld* world, float delta_time) {
     // Collisions
     for (int i = 0; i < world->body_count; i++) {
         for (int j = 0; j < world->body_count; j++) {
-                    if (i <= j) continue;
-                    myRigidBody* a_body =  world->bodies[i];
-                    myRigidBody* b_body = world->bodies[j];
-
-                    myRigidBodyType i_type = my_RigidBody_GetType(a_body);
-                    myRigidBodyType j_type = my_RigidBody_GetType(b_body);
-
-                    myContact contact;
-
-                    if(my_Collision_CheckPolygons(a_body, b_body, &contact)) {
-                        my_Solver_ResolveCollision(a_body, b_body, &contact);
-                    
-                    }
-
-                }
-    }
-
-    /*
-    for (int i = 0; i < world->body_count; i++) {
-        for (int j = 0; j < world->body_count; j++) {
             if (i <= j) continue;
             myRigidBody* a_body =  world->bodies[i];
             myRigidBody* b_body = world->bodies[j];
 
             myRigidBodyType i_type = my_RigidBody_GetType(a_body);
             myRigidBodyType j_type = my_RigidBody_GetType(b_body);
-
+            
+            myCollisionType collision_type = my_Collision_GetCollisionType(i_type, j_type);
             myContact contact;
 
-            if (i_type == MY_RIGIDBODY_CIRCLE && j_type == MY_RIGIDBODY_CIRCLE) {
-                if(my_Collision_CheckCircles(a_body, b_body, &contact)) {
+
+            if (collision_type == CIRCLEPOLYGON) {
+                if (i_type == MY_RIGIDBODY_CIRCLE) {
+                    if (my_Collisions_CheckCirclePolygon(a_body, b_body, &contact)) {
+                        my_Solver_ResolveCollision(a_body, b_body, &contact);
+                    }
+                } else {
+                    // b_body is the circle, a_body is the polygon
+                    if (my_Collisions_CheckCirclePolygon(b_body, a_body, &contact)) {
+                        my_Solver_ResolveCollision(b_body, a_body, &contact); 
+                    }
+                }
+            }
+            else if (collision_type == POLYGONPOLYGON) {
+                if (my_Collision_CheckPolygons(a_body, b_body, &contact)) {
+                    my_Solver_ResolveCollision(a_body, b_body, &contact);
+                }
+            }
+            else if (collision_type == CIRCLECIRCLE) {
+                if (my_Collision_CheckCircles(a_body, b_body, &contact)) {
                     my_Solver_ResolveCollision(a_body, b_body, &contact);
                 }
             }
 
+            // check other combinations
+            /*
+            switch (collision_type)
+            {
+            case CIRCLECIRCLE:
+                is_contact = my_Collision_CheckCircles(a_body, b_body, &contact);
+                break;
+
+            case CIRCLEPOLYGON:
+                is_contact = my_Collisions_CheckCirclePolygon(a_body, b_body, &contact);
+                OutputDebugString(L"circle polygon");
+                break;
+
+            case POLYGONPOLYGON:
+                is_contact = my_Collision_CheckPolygons(a_body, b_body, &contact);
+                break;
+
+            default:
+                break;
+            }*/
+
         }
     }
-        */
 }
 
 int my_World_GetBodyCount(myWorld* world) {

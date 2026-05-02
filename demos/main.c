@@ -92,23 +92,49 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     world = my_World_Create();
-    myVec2 triangle_vertices[3] = {
-        (myVec2){0.0f, 50.0f},
+    myVec2 box_vertices[4] = {
         (myVec2){-50.0f, -50.0f},
-        (myVec2){50.0f, -50.0f}
+        (myVec2){-50.0f, 50.0f},
+        (myVec2){50.0f, 50.0f},
+        (myVec2){50.0f, -50.0f},
     };
 
+    myVec2 triangle_vertices[3] = {
+        (myVec2){0.0f, -50.0f},
+        (myVec2){-50.0f, 50.0f},
+        (myVec2){50.0f, 50.0f},
+    };
+    my_RigidBody_CreateCircleBody(world, 50.0f, 1.0f, 0.5f, (myVec2){350.0f, 100.0f}, false);
+    my_RigidBody_CreatePolygonBody(
+    world,
+    box_vertices,
+    4,
+    1.0f,             
+    1.0f,                     
+    (myVec2){650.0f, 150.0f}, 
+    false                   
+    );
+        my_RigidBody_CreatePolygonBody(
+    world,
+    triangle_vertices,
+    3,
+    1.0f,             
+    1.0f,                     
+    (myVec2){650.0f, 150.0f}, 
+    false                   
+    );
+    
+    my_RigidBody_CreateCircleBody(world, 50.0f, 1.0f, 0.5f, (myVec2){350.0f, 500.0f}, false);
     my_RigidBody_CreatePolygonBody(
         world,
         triangle_vertices,
-        3,
+        4,
         1.0f,             
         1.0f,                     
         (myVec2){450.0f, 100.0f}, 
         false                   
     );
-    my_RigidBody_CreateBoxBody(world, 50.0f, 50.0f, 1.0f, 1.0f, (myVec2){550.0f, 100.0f}, false);
-    my_RigidBody_CreateBoxBody(world, 50.0f, 50.0f, 1.0f, 1.0f, (myVec2){350.0f, 100.0f}, false);
+    //my_RigidBody_CreateBoxBody(world, 50.0f, 50.0f, 1.0f, 1.0f, (myVec2){550.0f, 100.0f}, false);
     /*
     my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){600.0f, 100.0f}, false);
     my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){900.0f, 100.0f}, false);

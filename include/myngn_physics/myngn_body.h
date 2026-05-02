@@ -39,5 +39,6 @@ void my_RigidBody_Move(myRigidBody* body, myVec2 amount);
 // for now
 
 myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count);
+myVec2 my_RigidBody_GetArithmeticMean(myRigidBody* body);
 
 #endif

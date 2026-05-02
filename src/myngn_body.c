@@ -192,3 +192,11 @@ myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count) 
 
     return (myVec2){x_total / (float)vertex_count, y_total / (float)vertex_count};
 }
+
+myVec2 my_RigidBody_GetArithmeticMean(myRigidBody* body) {
+    if (my_RigidBody_GetType == MY_RIGIDBODY_CIRCLE) {
+        return body->position;
+    }
+
+    return body->arithmetic_mean;
+}
