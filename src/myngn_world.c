@@ -1,5 +1,6 @@
-#include "../include/myngn_physics/myngn_world.h"
 #include <windows.h>
+#include "../include/myngn_physics/myngn_world.h"
+#include "../include/myngn_physics/myngn_math.h"
 #include "myngn_solver.h"
 #include "myngn_collision.h"
 
@@ -32,6 +33,14 @@ myWorld* my_World_Create() {
     return world;
 }
 
+float my_World_ClampDensity(myWorld* world, float density) {
+    return my_Math_Clamp(density, world->min_density, world->max_density);
+}
+
+float my_World_ClampRestitution(myWorld* world, float restitution) {
+    return my_Math_Clamp(restitution, world->min_restitution, world->max_restitution);
+}
+
 void my_World_AddBody(myWorld* world, myRigidBody* body) {
     if (world->body_count >= world->body_capacity) {
         world->body_capacity *= 2;
@@ -53,6 +62,8 @@ void my_World_Free(myWorld* world) {
 
 void my_World_Step(myWorld* world, float delta_time) {
 
+
+    
     // Linear motion and rotations
     for (int i = 0; i < world->body_count; i++) {
         myRigidBody* a_body =  world->bodies[i];

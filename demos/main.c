@@ -57,13 +57,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         (myVec2){150.0f, 150.0f},
         (myVec2){150.0f, -150.0f},
     };
-    my_RigidBody_CreateCircleBody(world, 50.0f, 1.0f, 0.5f, (myVec2){350.0f, 100.0f}, false);
+    my_RigidBody_CreateCircleBody(world, 35.0f, 1.0f, 0.2f, (myVec2){350.0f, 100.0f}, false);
     my_RigidBody_CreatePolygonBody(
     world,
     box_vertices,
     4,
     1.0f,             
-    1.0f,                     
+    0.5f,                     
     (myVec2){650.0f, 150.0f}, 
     false                   
     );

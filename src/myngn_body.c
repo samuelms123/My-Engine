@@ -42,9 +42,9 @@ void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, 
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_CIRCLE;
     body->radius = radius;
-    body->density = 15.0f;
+    body->density = my_World_ClampDensity(world, density);
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = 0.5f;
+    body->restitution = my_World_ClampRestitution(world, restitution);
     body->area = MY_PI * radius * radius;
     body->mass = body->area * density;
     body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
@@ -63,9 +63,9 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
     body->position = position;
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_BOX;
-    body->density = density;
+    body->density = my_World_ClampDensity(world, density);
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = restitution;
+    body->restitution = my_World_ClampRestitution(world, restitution);
     body->width = width;
     body->height = height;
     body->area = width * height;
@@ -98,9 +98,9 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
     body->position = position;
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_POLYGON;
-    body->density = 15.0f;
+    body->density = my_World_ClampDensity(world, density);
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = 0.5f;
+    body->restitution = my_World_ClampRestitution(world, restitution);
     body->area = my_RigidBody_CalculateArea(vertices, vertex_count);
     body->mass = body->area * density;
     body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
