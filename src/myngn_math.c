@@ -77,3 +77,15 @@ float my_Math_SquaredDistance(myVec2 a, myVec2 b) {
 
     return (dx * dx) + (dy * dy);
 }
+
+float my_Math_Clamp(float value, float min, float max) {
+    if (value < min) {
+        return min;
+    }
+    else if (value > max) {
+        return max;
+    }
+    else {
+        return value;
+    }
+}

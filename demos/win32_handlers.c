@@ -5,7 +5,7 @@
 #include "../include/myngn_physics/myngn_math.h"
 
 extern myWorld* world;
-const float SPEED = 350.0f;
+const float FORCE_MAGNITUDE = 500.0f;
 const float ANGULAR_SPEED = 10.0f;
 
 void on_paint(HWND hwnd) {
@@ -70,38 +70,42 @@ void on_paint(HWND hwnd) {
 void on_key_w_down() {
     myRigidBody* body =  my_World_GetBody(world, 0);
     if (body != NULL) {
-        myVec2 vel = my_RigidBody_GetVelocity(body);
-        vel.y = -SPEED;
-        vel.x = 0;
-        my_RigidBody_SetVelocity(body, vel);
+        myVec2 force_dir;
+        force_dir.x = 0;
+        force_dir.y = -FORCE_MAGNITUDE;
+
+        my_RigidBody_AddForce(body, force_dir);
     }
 }
 
 void on_key_a_down() {
     myRigidBody* body =  my_World_GetBody(world, 0);
     if (body != NULL) {
-        myVec2 vel = my_RigidBody_GetVelocity(body);
-        vel.x = -SPEED;
-        vel.y = 0;
-        my_RigidBody_SetVelocity(body, vel);
+        myVec2 force_dir;
+        force_dir.x = -FORCE_MAGNITUDE;;
+        force_dir.y = 0;
+
+        my_RigidBody_AddForce(body, force_dir);
     }
 }
 void on_key_s_down() {
     myRigidBody* body =  my_World_GetBody(world, 0);
     if (body != NULL) {
-        myVec2 vel = my_RigidBody_GetVelocity(body);
-        vel.x = 0;
-        vel.y = SPEED;
-        my_RigidBody_SetVelocity(body, vel);
+        myVec2 force_dir;
+        force_dir.x = 0;
+        force_dir.y = FORCE_MAGNITUDE;
+
+        my_RigidBody_AddForce(body, force_dir);
     }
 }
 void on_key_d_down() {
     myRigidBody* body =  my_World_GetBody(world, 0);
     if (body != NULL) {
-        myVec2 vel = my_RigidBody_GetVelocity(body);
-        vel.x = SPEED;
-        vel.y = 0;
-        my_RigidBody_SetVelocity(body, vel);
+        myVec2 force_dir;
+        force_dir.x = FORCE_MAGNITUDE;;
+        force_dir.y = 0;
+
+        my_RigidBody_AddForce(body, force_dir);
     }
 }
 
@@ -116,11 +120,7 @@ void on_key_space_down() {
 }
 
 void on_no_press() {
-    myRigidBody* body =  my_World_GetBody(world, 0);
-    if (body != NULL) {
-        my_RigidBody_SetVelocity(body, (myVec2){0.0f, 0.0f});
-        my_RigidBody_SetAngularVelocity(body, 0.0f);
-    }
+    return;
 }
 /*;
 void on_mousemove(LPARAM lparam);

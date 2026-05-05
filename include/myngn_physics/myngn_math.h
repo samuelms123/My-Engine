@@ -31,6 +31,7 @@ float my_Math_SquaredDistance(myVec2 a, myVec2 b);
 float my_Math_SquaredLength(myVec2 v);
 float my_Math_Dot(myVec2 a, myVec2 b);
 float my_Math_Abs(float a);
+float my_Math_Clamp(float value, float min, float max);
 
 
 #endif

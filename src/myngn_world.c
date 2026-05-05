@@ -4,7 +4,11 @@
 #include "myngn_collision.h"
 
 struct myWorld {
-    // myVec2 gravity;
+    myVec2 gravity;
+    float max_density;
+    float min_density;
+    float max_restitution;
+    float min_restitution;
     myRigidBody** bodies;
 
     int body_count;
@@ -14,7 +18,11 @@ struct myWorld {
 myWorld* my_World_Create() {
     myWorld* world = (myWorld*)malloc(sizeof(myWorld));
     
-    //world->gravity = (myVec2){0.0f, 9.81f}; 
+    world->gravity = (myVec2){0.0f, 9.81f}; 
+    world->max_density = 22.6f; // iridium
+    world->min_density = 0.00009f; // hydrogen
+    world->max_restitution = 1.0f;
+    world->min_restitution = 0.0f;
     world->body_capacity = 16;
     world->body_count = 0;
     
@@ -48,7 +56,8 @@ void my_World_Step(myWorld* world, float delta_time) {
     // Linear motion and rotations
     for (int i = 0; i < world->body_count; i++) {
         myRigidBody* a_body =  world->bodies[i];
-
+        my_RigidBody_Step(a_body, delta_time);
+/*
         myVec2 pos = my_RigidBody_GetPosition(a_body);
         myVec2 vel = my_RigidBody_GetVelocity(a_body);
 
@@ -57,11 +66,15 @@ void my_World_Step(myWorld* world, float delta_time) {
 
         my_RigidBody_SetPosition(a_body, pos);
 
+
         float angular_velocity = my_RigidBody_GetAngularVelocity(a_body);
         if (angular_velocity != 0.0f) {
             float rotation_amount = angular_velocity * delta_time;
             my_RigidBody_Rotate(a_body, rotation_amount);
         }
+
+*/
+
     }
 
 
@@ -102,28 +115,6 @@ void my_World_Step(myWorld* world, float delta_time) {
                     my_Solver_ResolveCollision(a_body, b_body, &contact);
                 }
             }
-
-            // check other combinations
-            /*
-            switch (collision_type)
-            {
-            case CIRCLECIRCLE:
-                is_contact = my_Collision_CheckCircles(a_body, b_body, &contact);
-                break;
-
-            case CIRCLEPOLYGON:
-                is_contact = my_Collisions_CheckCirclePolygon(a_body, b_body, &contact);
-                OutputDebugString(L"circle polygon");
-                break;
-
-            case POLYGONPOLYGON:
-                is_contact = my_Collision_CheckPolygons(a_body, b_body, &contact);
-                break;
-
-            default:
-                break;
-            }*/
-
         }
     }
 }

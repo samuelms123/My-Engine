@@ -7,6 +7,11 @@
 #include <stdbool.h>
 
 myWorld* world = NULL;
+bool key_w_down = false;
+bool key_a_down = false;
+bool key_s_down = false;
+bool key_d_down = false;
+bool key_space_down = false;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -21,67 +26,21 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 0;
 
     case WM_KEYDOWN:
-        if (wParam == 0x57) { // W
-            on_key_w_down();
-            return 0;
-        }
-        else if (wParam == 0x41) { // A
-            on_key_a_down();
-            return 0;
-        }
-        else if (wParam == 0x53) { // S
-            on_key_s_down();
-            return 0;
-        }
-        else if (wParam == 0x44) { // D
-            on_key_d_down();
-            return 0;
-        }
-        else if (wParam == 0x20) { // space
-            on_key_space_down();
-            return 0;
-        }
+        if (wParam == 0x57) key_w_down = true; // W
+        if (wParam == 0x41) key_a_down = true; // A
+        if (wParam == 0x53) key_s_down = true; // S
+        if (wParam == 0x44) key_d_down = true; // D
+        if (wParam == 0x20) key_space_down = true; // Space
         return 0;
 
     case WM_KEYUP:
-            if (wParam == 0x57) { // W
-                on_no_press();
-                return 0;
-            }
-            else if (wParam == 0x41) { // A
-                on_no_press();
-                return 0;
-            }
-            else if (wParam == 0x53) { // S
-                on_no_press();
-                return 0;
-            }
-            else if (wParam == 0x44) { // D
-                on_no_press();
-                return 0;
-            }
-            else if (wParam == 0x20) { // space
-                on_no_press();
-                return 0;
-            }
-            return 0;
-/*
-    case WM_MOUSEMOVE:
-        on_mousemove(lParam);
+        if (wParam == 0x57) key_w_down = false; // W
+        if (wParam == 0x41) key_a_down = false; // A
+        if (wParam == 0x53) key_s_down = false; // S
+        if (wParam == 0x44) key_d_down = false; // D
+        if (wParam == 0x20) key_space_down = false; // Space
         return 0;
 
-    case WM_LBUTTONUP:
-        on_leftmouseup(lParam);
-        return 0;
-
-    case WM_RBUTTONDOWN:
-        on_rightmousedown(lParam);
-        return 0;
-
-    case WM_RBUTTONUP:
-        on_rightmouseup(lParam);
-        return 0;
-*/
     case WM_ERASEBKGND:
         return 1;
 
@@ -221,6 +180,12 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
+
+        if (key_w_down) on_key_w_down();
+        if (key_a_down) on_key_a_down();
+        if (key_s_down) on_key_s_down();
+        if (key_d_down) on_key_d_down();
+        if (key_space_down) on_key_space_down();
 
         // PHYSICS PROCESS
         while (physics_accumulator >= TARGET_PHYSICS_DELTA) {

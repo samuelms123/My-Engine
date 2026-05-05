@@ -14,6 +14,7 @@ typedef struct myRigidBody {
     myVec2 vertices[MY_MAX_VERTICES];
     myVec2 transformed_vertices[MY_MAX_VERTICES];
     myVec2 arithmetic_mean;
+    myVec2 force;
     int vertex_count;
     float angular_velocity;
     float width;
@@ -42,6 +43,7 @@ void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, 
     body->type = MY_RIGIDBODY_CIRCLE;
     body->radius = radius;
     body->density = density;
+    body->force = (myVec2) {0.0f, 0.0f};
     body->restitution = restitution;
     body->area = MY_PI * radius * radius;
     body->mass = body->area * density;
@@ -62,6 +64,7 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_BOX;
     body->density = density;
+    body->force = (myVec2) {0.0f, 0.0f};
     body->restitution = restitution;
     body->width = width;
     body->height = height;
@@ -96,6 +99,7 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_POLYGON;
     body->density = density;
+    body->force = (myVec2) {0.0f, 0.0f};
     body->restitution = restitution;
     // For now, setting a dummy area so mass doesn't become zero
     body->area = 10.0f;
@@ -118,6 +122,22 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
 }
 
 myRigidBodyType my_RigidBody_GetType(myRigidBody* body) {return body->type;}
+
+void my_RigidBody_Step(myRigidBody* body, float delta_time) {
+    body->velocity = my_Math_Add(
+        body->velocity,
+        my_Math_Scale(body->force, delta_time)
+    );
+
+    body->position = my_Math_Add(
+        body->position, 
+        my_Math_Scale(body->velocity, delta_time)
+    );
+
+    body->rotation = body->rotation + body->angular_velocity * delta_time;
+
+    body->force = (myVec2) {0.0f, 0.0f};
+}
 
 myVec2 my_RigidBody_GetPosition(myRigidBody* body) {return body->position;}
 void my_RigidBody_SetPosition(myRigidBody* body, myVec2 pos) {
@@ -199,4 +219,8 @@ myVec2 my_RigidBody_GetArithmeticMean(myRigidBody* body) {
     }
 
     return body->arithmetic_mean;
+}
+
+void my_RigidBody_AddForce(myRigidBody* body, myVec2 amount) {
+    body->force = amount;
 }
