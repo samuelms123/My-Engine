@@ -32,6 +32,8 @@ float my_Math_SquaredLength(myVec2 v);
 float my_Math_Dot(myVec2 a, myVec2 b);
 float my_Math_Abs(float a);
 float my_Math_Clamp(float value, float min, float max);
+float my_Math_Min(float a, float b);
+float my_Math_Max(float a, float b);
 
 
 #endif

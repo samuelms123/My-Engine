@@ -21,6 +21,10 @@ myRigidBodyType my_RigidBody_GetType(myRigidBody* body);
 
 void my_RigidBody_Step(myRigidBody* body, float delta_time);
 
+float my_RigidBody_GetRestitution(myRigidBody* body);
+float my_RigidBody_GetInvMass(myRigidBody* body);
+float my_RigidBody_GetMass(myRigidBody* body);
+
 myVec2 my_RigidBody_GetPosition(myRigidBody* body);
 void my_RigidBody_SetPosition(myRigidBody* body, myVec2 pos);
 
@@ -39,6 +43,7 @@ int my_RigidBody_GetVertexCount(myRigidBody* body);
 void my_RigidBody_Move(myRigidBody* body, myVec2 amount);
 void my_RigidBody_AddForce(myRigidBody* body, myVec2 amount);
 
+float my_RigidBody_CalculateArea(myVec2* vertices, int vertex_count);
 // for now
 
 myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count);

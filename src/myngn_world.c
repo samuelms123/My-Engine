@@ -57,24 +57,6 @@ void my_World_Step(myWorld* world, float delta_time) {
     for (int i = 0; i < world->body_count; i++) {
         myRigidBody* a_body =  world->bodies[i];
         my_RigidBody_Step(a_body, delta_time);
-/*
-        myVec2 pos = my_RigidBody_GetPosition(a_body);
-        myVec2 vel = my_RigidBody_GetVelocity(a_body);
-
-        pos.x += vel.x * delta_time;
-        pos.y += vel.y * delta_time;
-
-        my_RigidBody_SetPosition(a_body, pos);
-
-
-        float angular_velocity = my_RigidBody_GetAngularVelocity(a_body);
-        if (angular_velocity != 0.0f) {
-            float rotation_amount = angular_velocity * delta_time;
-            my_RigidBody_Rotate(a_body, rotation_amount);
-        }
-
-*/
-
     }
 
 

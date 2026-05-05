@@ -89,3 +89,16 @@ float my_Math_Clamp(float value, float min, float max) {
         return value;
     }
 }
+
+float my_Math_Min(float a, float b) {
+    if (b < a ) {
+        return b;
+    }
+    return a;
+}
+float my_Math_Max(float a, float b) {
+    if (b > a ) {
+        return b;
+    }
+    return a;
+}

@@ -42,9 +42,9 @@ void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, 
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_CIRCLE;
     body->radius = radius;
-    body->density = density;
+    body->density = 15.0f;
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = restitution;
+    body->restitution = 0.5f;
     body->area = MY_PI * radius * radius;
     body->mass = body->area * density;
     body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
@@ -98,11 +98,10 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
     body->position = position;
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_POLYGON;
-    body->density = density;
+    body->density = 15.0f;
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = restitution;
-    // For now, setting a dummy area so mass doesn't become zero
-    body->area = 10.0f;
+    body->restitution = 0.5f;
+    body->area = my_RigidBody_CalculateArea(vertices, vertex_count);
     body->mass = body->area * density;
     body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
     body->is_static = is_static;
@@ -122,6 +121,9 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
 }
 
 myRigidBodyType my_RigidBody_GetType(myRigidBody* body) {return body->type;}
+float my_RigidBody_GetRestitution(myRigidBody* body) {return body->restitution;}
+float my_RigidBody_GetInvMass(myRigidBody* body) {return body->inv_mass;}
+float my_RigidBody_GetMass(myRigidBody* body) {return body->mass;}
 
 void my_RigidBody_Step(myRigidBody* body, float delta_time) {
     body->velocity = my_Math_Add(
@@ -137,6 +139,21 @@ void my_RigidBody_Step(myRigidBody* body, float delta_time) {
     body->rotation = body->rotation + body->angular_velocity * delta_time;
 
     body->force = (myVec2) {0.0f, 0.0f};
+    body->is_transform_update_required = true;
+}
+
+float my_RigidBody_CalculateArea(myVec2* vertices, int vertex_count) {
+    if (vertex_count < 3) {return 0;}
+
+    float a = 0.0f;
+    float b = 0.0f;
+
+    for (int i = 0; i < vertex_count; i++) {
+        a += vertices[i].x * vertices[(i+1) % vertex_count].y;
+        b += vertices[i].y * vertices[(i+1) % vertex_count].x;
+    }
+
+    return 0.5 * my_Math_Abs((a-b));
 }
 
 myVec2 my_RigidBody_GetPosition(myRigidBody* body) {return body->position;}
