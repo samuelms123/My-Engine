@@ -12,6 +12,7 @@ bool key_a_down = false;
 bool key_s_down = false;
 bool key_d_down = false;
 bool key_space_down = false;
+myVec2 mouse_pos = (myVec2){0.0f, 0.0f};
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -41,6 +42,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         if (wParam == 0x20) key_space_down = false; // Space
         return 0;
 
+    case WM_MOUSEMOVE:
+        mouse_pos =  (myVec2){GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+        return 0;
+    
+    case WM_LBUTTONUP:
+        on_mouse_click(mouse_pos);
+        return 0;
+
     case WM_ERASEBKGND:
         return 1;
 
@@ -58,6 +67,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         (myVec2){150.0f, -150.0f},
     };
     my_RigidBody_CreateCircleBody(world, 35.0f, 1.0f, 0.2f, (myVec2){350.0f, 100.0f}, false);
+    my_RigidBody_CreateCircleBody(world, 35.0f, 1.0f, 0.2f, (myVec2){355.0f, 105.0f}, false);
     my_RigidBody_CreatePolygonBody(
     world,
     box_vertices,

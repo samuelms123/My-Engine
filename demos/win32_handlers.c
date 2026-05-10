@@ -3,6 +3,8 @@
 #include "../include/myngn_physics/myngn_world.h" 
 #include "../include/myngn_physics/myngn_body.h"
 #include "../include/myngn_physics/myngn_math.h"
+#include <stdlib.h>
+
 
 extern myWorld* world;
 const float FORCE_MAGNITUDE = 500.0f;
@@ -122,9 +124,27 @@ void on_key_space_down() {
 void on_no_press() {
     return;
 }
-/*;
-void on_mousemove(LPARAM lparam);
-void on_leftmouseup(LPARAM lparam);
-void on_rightmousedown(LPARAM lparam);
-void on_rightmouseup(LPARAM lparam);
-*/
+
+void on_mouse_click(myVec2 mouse_pos) {
+    // 1: circle 
+    // 2: box (polygon)
+    int type = rand() % 2;
+    switch (type)
+    {
+    case 0:
+        my_RigidBody_CreateCircleBody(world, 30.0f, 10.0f, 0.5f, mouse_pos, false);
+        break;
+    case 1:
+        myVec2 box_vertices[4] = {
+        (myVec2){-30.0f, -30.0f},
+        (myVec2){-30.0f, 30.0f},
+        (myVec2){30.0f, 30.0f},
+        (myVec2){30.0f, -30.0f},
+    };
+        my_RigidBody_CreatePolygonBody(world, box_vertices, 4, 10.0f, 0.5f, mouse_pos, false);
+        break;
+    
+    default:
+        break;
+    }
+}
