@@ -47,11 +47,17 @@ void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, 
     body->restitution = my_World_ClampRestitution(world, restitution);
     body->area = MY_PI * radius * radius;
     body->mass = body->area * density;
-    body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
     body->is_static = is_static;
     body->vertex_count = 0;
     body->is_transform_update_required = false;
     body->angular_velocity = 0.0f;
+
+    if (!is_static) {
+        body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
+    }
+    else {
+        body->inv_mass = 0.0f;
+    }
 
     my_World_AddBody(world, body);
 }
@@ -103,11 +109,17 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
     body->restitution = my_World_ClampRestitution(world, restitution);
     body->area = my_RigidBody_CalculateArea(vertices, vertex_count);
     body->mass = body->area * density;
-    body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
     body->is_static = is_static;
     body->vertex_count = vertex_count;
     body->is_transform_update_required = true;
     body->angular_velocity = 0.0f;
+
+    if (!is_static) {
+        body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
+    }
+    else {
+        body->inv_mass = 0.0f;
+    }
 
     // for now
     body->arithmetic_mean = my_RigidBody_CalculateArithmeticMean(vertices, vertex_count);
@@ -175,6 +187,10 @@ float my_RigidBody_GetRadius(myRigidBody* body) {
         return body->radius;
     }
     return 0.0f;
+}
+
+bool my_RigidBody_IsStatic(myRigidBody* body) {
+    return body->is_static;
 }
 
 void my_RigidBody_Rotate(myRigidBody* body, float amount) {

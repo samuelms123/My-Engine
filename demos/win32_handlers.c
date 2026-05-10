@@ -141,7 +141,7 @@ void on_mouse_click(myVec2 mouse_pos) {
         (myVec2){30.0f, 30.0f},
         (myVec2){30.0f, -30.0f},
     };
-        my_RigidBody_CreatePolygonBody(world, box_vertices, 4, 10.0f, 0.5f, mouse_pos, false);
+        my_RigidBody_CreatePolygonBody(world, box_vertices, 4, 10.0f, 0.5f, mouse_pos, true);
         break;
     
     default:

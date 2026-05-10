@@ -79,6 +79,10 @@ void my_World_Step(myWorld* world, float delta_time) {
             myRigidBody* a_body =  world->bodies[i];
             myRigidBody* b_body = world->bodies[j];
 
+            if (my_RigidBody_IsStatic(a_body) && my_RigidBody_IsStatic(b_body)) {
+                continue;
+            }
+
             myRigidBodyType i_type = my_RigidBody_GetType(a_body);
             myRigidBodyType j_type = my_RigidBody_GetType(b_body);
             

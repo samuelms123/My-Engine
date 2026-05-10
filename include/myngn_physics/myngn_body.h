@@ -44,6 +44,8 @@ void my_RigidBody_Move(myRigidBody* body, myVec2 amount);
 void my_RigidBody_AddForce(myRigidBody* body, myVec2 amount);
 
 float my_RigidBody_CalculateArea(myVec2* vertices, int vertex_count);
+
+bool my_RigidBody_IsStatic(myRigidBody* body);
 // for now
 
 myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count);
