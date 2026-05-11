@@ -3,6 +3,7 @@
 #include "../include/myngn_physics/myngn_math.h"
 #include <stdlib.h>
 #include <math.h>
+#include <float.h>
 
 #define MY_MAX_VERTICES 8
 
@@ -144,6 +145,26 @@ myRigidBodyType my_RigidBody_GetType(myRigidBody* body) {return body->type;}
 float my_RigidBody_GetRestitution(myRigidBody* body) {return body->restitution;}
 float my_RigidBody_GetInvMass(myRigidBody* body) {return body->inv_mass;}
 float my_RigidBody_GetMass(myRigidBody* body) {return body->mass;}
+
+myRigidBodyAABB my_RigidBody_GetAABB(myRigidBody* body) {
+    myRigidBodyAABB aabb;
+    aabb.max.x = FLT_MAX;
+    aabb.max.y = FLT_MAX;
+    aabb.min.x = FLT_MAX;
+    aabb.min.y = FLT_MAX;
+
+    myVec2 pos = my_RigidBody_GetPosition(body);
+
+    if (body->type == MY_RIGIDBODY_CIRCLE) {
+        float r = my_RigidBody_GetRadius(body);
+        aabb.max.x = pos.x + r;
+        aabb.max.y = pos.y + r;
+        aabb.min.x = pos.x - r;
+        aabb.min.y = pos.y - r;
+    }
+
+    return aabb;
+}
 
 void my_RigidBody_Step(myRigidBody* body, myVec2 gravity, float delta_time) {
     if (body->is_static) {return;}

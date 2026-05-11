@@ -13,11 +13,18 @@ typedef enum myRigidBodyType {
     MY_RIGIDBODY_POLYGON
 } myRigidBodyType;
 
+typedef struct myRigidBodyAABB {
+    myVec2 max;
+    myVec2 min;
+
+} myRigidBodyAABB;
+
 
 void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, float restitution, myVec2 position, bool is_static);
 void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float density, float restitution, myVec2 position, bool is_static);
 void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex_count ,float density, float restitution, myVec2 position, bool is_static);
 myRigidBodyType my_RigidBody_GetType(myRigidBody* body);
+myRigidBodyAABB my_RigidBody_GetAABB(myRigidBody* body);
 
 void my_RigidBody_Step(myRigidBody* body, myVec2 gravity, float delta_time);
 

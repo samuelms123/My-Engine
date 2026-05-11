@@ -37,6 +37,9 @@ void on_paint(HWND hwnd, float PPM) {
                     myVec2 pos = my_RigidBody_GetPosition(body);
                     int cx = (int)(pos.x * PPM);
                     int cy = (int)(height - (pos.y * PPM));
+                    myRigidBodyAABB aabb = my_RigidBody_GetAABB(body);
+
+                    Rectangle(memDC, aabb.min.x * PPM, height - (aabb.max.y * PPM), aabb.max.x * PPM, height - (aabb.min.y  * PPM));
                     Ellipse(
                         memDC,
                         cx - (int)(r * PPM),
