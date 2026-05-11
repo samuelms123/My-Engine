@@ -44,7 +44,11 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 0;
 */
     case WM_MOUSEMOVE:
-        mouse_pos =  (myVec2){GET_X_LPARAM(lParam) / PPM, GET_Y_LPARAM(lParam) / PPM};
+            {
+                RECT r; GetClientRect(hwnd, &r);
+                int height = r.bottom - r.top;
+                mouse_pos =  (myVec2){GET_X_LPARAM(lParam) / PPM, (float)(height - GET_Y_LPARAM(lParam)) / PPM};
+            }
         return 0;
     
     case WM_LBUTTONDOWN:
@@ -65,7 +69,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     world = my_World_Create();
-    my_RigidBody_CreateBoxBody(world, 8.0f, 1.0f, 10.0f, 0.5, (myVec2){500.0f / PPM, 900.0f / PPM}, true);
+        my_RigidBody_CreateBoxBody(world, 8.0f, 1.0f, 10.0f, 0.5, (myVec2){500.0f / PPM, 100.0f / PPM}, true);
 
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";
@@ -107,8 +111,8 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     bool running = true;
     MSG msg = { 0 };
 
-    const float FPS_CAP = 80.0f;
-    const float TPS = 80.0f;
+    const float FPS_CAP = 120.0f;
+    const float TPS = 180.0f;
 
     LARGE_INTEGER frequency, last_time, current_time;
     QueryPerformanceFrequency(&frequency); // How many "counts" per second, machine dependent
@@ -117,11 +121,10 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
     float physics_accumulator = 0.0f;
     float render_accumulator = 0.0f;
 
-    const float TARGET_PHYSICS_DELTA = 1.0f / TPS;      // every 0.01666 seconds 
-    const float TARGET_RENDER_DELTA = 1.0f / FPS_CAP;   // every 0.01250 seconds
+    const float TARGET_PHYSICS_DELTA = 1.0f / TPS;
+    const float TARGET_RENDER_DELTA = 1.0f / FPS_CAP;
 
 
-    // MAIN ENGINE LOOP
     while (running) {
         QueryPerformanceCounter(&current_time);
 
@@ -144,13 +147,13 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
             TranslateMessage(&msg);
             DispatchMessage(&msg);
         }
-
+/*
         if (key_w_down) on_key_w_down();
         if (key_a_down) on_key_a_down();
         if (key_s_down) on_key_s_down();
         if (key_d_down) on_key_d_down();
         if (key_space_down) on_key_space_down();
-
+*/
         // PHYSICS PROCESS
         while (physics_accumulator >= TARGET_PHYSICS_DELTA) {
             my_World_Step(world, TARGET_PHYSICS_DELTA);
@@ -161,7 +164,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         if (render_accumulator >= TARGET_RENDER_DELTA) {
             InvalidateRect(hwnd, NULL, TRUE); 
             UpdateWindow(hwnd);
-            render_accumulator -= TARGET_RENDER_DELTA; 
+            render_accumulator = TARGET_RENDER_DELTA; 
         }
 
     }

@@ -19,7 +19,7 @@ struct myWorld {
 myWorld* my_World_Create() {
     myWorld* world = (myWorld*)malloc(sizeof(myWorld));
     
-    world->gravity = (myVec2){0.0f, 9.81f}; 
+    world->gravity = (myVec2){0.0f, -9.81f}; 
     world->max_density = 22.6f; // iridium
     world->min_density = 0.00009f; // hydrogen
     world->max_restitution = 1.0f;

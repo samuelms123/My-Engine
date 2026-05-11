@@ -35,12 +35,14 @@ void on_paint(HWND hwnd, float PPM) {
                 if (my_RigidBody_GetType(body) == MY_RIGIDBODY_CIRCLE) {
                     float r = my_RigidBody_GetRadius(body);
                     myVec2 pos = my_RigidBody_GetPosition(body);
+                    int cx = (int)(pos.x * PPM);
+                    int cy = (int)(height - (pos.y * PPM));
                     Ellipse(
                         memDC,
-                        (int)((pos.x - r) * PPM),
-                        (int)((pos.y - r) * PPM),
-                        (int)((pos.x + r) * PPM),
-                        (int)((pos.y + r) * PPM)
+                        cx - (int)(r * PPM),
+                        cy - (int)(r * PPM),
+                        cx + (int)(r * PPM),
+                        cy + (int)(r * PPM)
                     );
                 }
 
@@ -49,15 +51,14 @@ void on_paint(HWND hwnd, float PPM) {
                     myVec2* vertices = my_RigidBody_GetTransformedVertices(body);
                     int count = my_RigidBody_GetVertexCount(body);
 
-                    // FIX: Multiply as floats first, wrap in parentheses, THEN cast to int
-                    MoveToEx(memDC, (int)(vertices[0].x * PPM), (int)(vertices[0].y * PPM), NULL);
+                    MoveToEx(memDC, (int)(vertices[0].x * PPM), (int)(height - vertices[0].y * PPM), NULL);
 
                     for (int v = 1; v < count; v++) {
-                        LineTo(memDC, (int)(vertices[v].x * PPM), (int)(vertices[v].y * PPM));
+                        LineTo(memDC, (int)(vertices[v].x * PPM), (int)(height - vertices[v].y * PPM));
                     }
 
                     // Connect the last vertex back to the first
-                    LineTo(memDC, (int)(vertices[0].x * PPM), (int)(vertices[0].y * PPM));
+                    LineTo(memDC, (int)(vertices[0].x * PPM), (int)(height - vertices[0].y * PPM));
                 }
             }
         }
@@ -76,7 +77,7 @@ void on_key_w_down() {
     if (body != NULL) {
         myVec2 force_dir;
         force_dir.x = 0;
-        force_dir.y = -FORCE_MAGNITUDE;
+        force_dir.y = FORCE_MAGNITUDE;
 
         my_RigidBody_AddForce(body, force_dir);
     }
@@ -97,7 +98,7 @@ void on_key_s_down() {
     if (body != NULL) {
         myVec2 force_dir;
         force_dir.x = 0;
-        force_dir.y = FORCE_MAGNITUDE;
+        force_dir.y = -FORCE_MAGNITUDE;
 
         my_RigidBody_AddForce(body, force_dir);
     }

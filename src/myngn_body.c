@@ -80,6 +80,7 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
     body->vertex_count = 4;
     body->is_transform_update_required = true;
     body->angular_velocity = 0.0f;
+    body->rotation = 0.0f;
 
     if (!is_static) {
     body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
@@ -119,6 +120,7 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
     body->vertex_count = vertex_count;
     body->is_transform_update_required = true;
     body->angular_velocity = 0.0f;
+    body->rotation = 0.0f;
 
     if (!is_static) {
         body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
@@ -256,7 +258,7 @@ myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count) 
 }
 
 myVec2 my_RigidBody_GetArithmeticMean(myRigidBody* body) {
-    if (my_RigidBody_GetType == MY_RIGIDBODY_CIRCLE) {
+    if (my_RigidBody_GetType(body) == MY_RIGIDBODY_CIRCLE) {
         return body->position;
     }
 

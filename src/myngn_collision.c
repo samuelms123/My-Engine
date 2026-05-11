@@ -105,7 +105,6 @@ bool my_Collision_CheckPolygons(myRigidBody* a, myRigidBody* b, myContact* out_c
             normal = test_axis;
         }
 
-
     }
 
     for (int i = 0; i < vertex_b_count; i++) {
@@ -129,18 +128,6 @@ bool my_Collision_CheckPolygons(myRigidBody* a, myRigidBody* b, myContact* out_c
         }
 
     }
-
-    // get arithmetic centr
-    myVec2 center_a = my_RigidBody_GetPosition(a);
-    myVec2 center_b = my_RigidBody_GetPosition(b);
-    myVec2 dir = my_Math_Sub(center_b, center_a);
-
-    if (my_Math_Dot(dir, out_contact->normal) < 0.0f) {
-        out_contact->normal.x = -out_contact->normal.x;
-        out_contact->normal.y = -out_contact->normal.y;
-    }
-
-
 
     return true;
 }
@@ -200,16 +187,7 @@ bool my_Collisions_CheckCirclePolygon(myRigidBody* circle, myRigidBody* polygon,
         out_contact->penetration = smaller_pen;
         out_contact->normal = test_axis;
     }
-
-    myVec2 polygon_center = my_Math_Add(my_RigidBody_GetArithmeticMean(polygon), my_RigidBody_GetPosition(polygon));
-    myVec2 dir = my_Math_Sub(polygon_center, circle_center);
-
-    if (my_Math_Dot(dir, out_contact->normal) < 0.0f) {
-        out_contact->normal.x = -out_contact->normal.x;
-        out_contact->normal.y = -out_contact->normal.y;
-    }
-
-
+    
     return true;
 }
 
