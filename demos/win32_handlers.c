@@ -10,7 +10,7 @@ extern myWorld* world;
 const float FORCE_MAGNITUDE = 500.0f;
 const float ANGULAR_SPEED = 10.0f;
 
-void on_paint(HWND hwnd) {
+void on_paint(HWND hwnd, float PPM) {
     PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
@@ -37,10 +37,10 @@ void on_paint(HWND hwnd) {
                     myVec2 pos = my_RigidBody_GetPosition(body);
                     Ellipse(
                         memDC,
-                        (int)(pos.x - r),
-                        (int)(pos.y - r),
-                        (int)(pos.x + r),
-                        (int)(pos.y + r)
+                        (int)((pos.x - r) * PPM),
+                        (int)((pos.y - r) * PPM),
+                        (int)((pos.x + r) * PPM),
+                        (int)((pos.y + r) * PPM)
                     );
                 }
 
@@ -49,13 +49,15 @@ void on_paint(HWND hwnd) {
                     myVec2* vertices = my_RigidBody_GetTransformedVertices(body);
                     int count = my_RigidBody_GetVertexCount(body);
 
-                    MoveToEx(memDC, (int)vertices[0].x, (int)vertices[0].y, NULL);
+                    // FIX: Multiply as floats first, wrap in parentheses, THEN cast to int
+                    MoveToEx(memDC, (int)(vertices[0].x * PPM), (int)(vertices[0].y * PPM), NULL);
 
                     for (int v = 1; v < count; v++) {
-                        LineTo(memDC, (int)vertices[v].x, (int)vertices[v].y);
+                        LineTo(memDC, (int)(vertices[v].x * PPM), (int)(vertices[v].y * PPM));
                     }
 
-                    LineTo(memDC, (int)vertices[0].x, (int)vertices[0].y);
+                    // Connect the last vertex back to the first
+                    LineTo(memDC, (int)(vertices[0].x * PPM), (int)(vertices[0].y * PPM));
                 }
             }
         }
@@ -125,26 +127,11 @@ void on_no_press() {
     return;
 }
 
-void on_mouse_click(myVec2 mouse_pos) {
-    // 1: circle 
-    // 2: box (polygon)
-    int type = rand() % 2;
-    switch (type)
-    {
-    case 0:
-        my_RigidBody_CreateCircleBody(world, 30.0f, 10.0f, 0.5f, mouse_pos, false);
-        break;
-    case 1:
-        myVec2 box_vertices[4] = {
-        (myVec2){-30.0f, -30.0f},
-        (myVec2){-30.0f, 30.0f},
-        (myVec2){30.0f, 30.0f},
-        (myVec2){30.0f, -30.0f},
-    };
-        my_RigidBody_CreatePolygonBody(world, box_vertices, 4, 10.0f, 0.5f, mouse_pos, true);
-        break;
-    
-    default:
-        break;
-    }
+void on_lmouse_click(myVec2 mouse_pos) {
+    my_RigidBody_CreateCircleBody(world, 0.5f, 10.0f, 0.5f, mouse_pos, false);
+
+}
+
+void on_rmouse_click(myVec2 mouse_pos) {
+    my_RigidBody_CreateBoxBody(world, 1.0f, 1.0f, 10.0f, 0.5f, mouse_pos, false);
 }

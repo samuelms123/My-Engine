@@ -27,7 +27,6 @@ myWorld* my_World_Create() {
     world->body_capacity = 16;
     world->body_count = 0;
     
-    // Allocate the array of pointers!
     world->bodies = (myRigidBody**)malloc(world->body_capacity * sizeof(myRigidBody*));
     
     return world;
@@ -62,12 +61,10 @@ void my_World_Free(myWorld* world) {
 
 void my_World_Step(myWorld* world, float delta_time) {
 
-
-    
     // Linear motion and rotations
     for (int i = 0; i < world->body_count; i++) {
         myRigidBody* a_body =  world->bodies[i];
-        my_RigidBody_Step(a_body, delta_time);
+        my_RigidBody_Step(a_body, world->gravity, delta_time);
     }
 
 

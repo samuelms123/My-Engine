@@ -13,6 +13,7 @@ bool key_s_down = false;
 bool key_d_down = false;
 bool key_space_down = false;
 myVec2 mouse_pos = (myVec2){0.0f, 0.0f};
+const float PPM = 100.0f;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -23,9 +24,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         return 0;
 
     case WM_PAINT:
-        on_paint(hwnd);
+        on_paint(hwnd, PPM);
         return 0;
-
+/*
     case WM_KEYDOWN:
         if (wParam == 0x57) key_w_down = true; // W
         if (wParam == 0x41) key_a_down = true; // A
@@ -41,13 +42,17 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
         if (wParam == 0x44) key_d_down = false; // D
         if (wParam == 0x20) key_space_down = false; // Space
         return 0;
-
+*/
     case WM_MOUSEMOVE:
-        mouse_pos =  (myVec2){GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)};
+        mouse_pos =  (myVec2){GET_X_LPARAM(lParam) / PPM, GET_Y_LPARAM(lParam) / PPM};
         return 0;
     
-    case WM_LBUTTONUP:
-        on_mouse_click(mouse_pos);
+    case WM_LBUTTONDOWN:
+        on_lmouse_click(mouse_pos);
+        return 0;
+
+    case WM_RBUTTONDOWN:
+        on_rmouse_click(mouse_pos);
         return 0;
 
     case WM_ERASEBKGND:
@@ -60,68 +65,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
     world = my_World_Create();
-    myVec2 box_vertices[4] = {
-        (myVec2){-150.0f, -150.0f},
-        (myVec2){-150.0f, 150.0f},
-        (myVec2){150.0f, 150.0f},
-        (myVec2){150.0f, -150.0f},
-    };
-    my_RigidBody_CreateCircleBody(world, 35.0f, 1.0f, 0.2f, (myVec2){350.0f, 100.0f}, false);
-    my_RigidBody_CreateCircleBody(world, 35.0f, 1.0f, 0.2f, (myVec2){355.0f, 105.0f}, false);
-    my_RigidBody_CreatePolygonBody(
-    world,
-    box_vertices,
-    4,
-    1.0f,             
-    0.5f,                     
-    (myVec2){650.0f, 150.0f}, 
-    false                   
-    );
-/*
-    myVec2 triangle_vertices[3] = {
-        (myVec2){0.0f, -50.0f},
-        (myVec2){-50.0f, 50.0f},
-        (myVec2){50.0f, 50.0f},
-    };
-    my_RigidBody_CreateCircleBody(world, 50.0f, 1.0f, 0.5f, (myVec2){350.0f, 100.0f}, false);
-    my_RigidBody_CreatePolygonBody(
-    world,
-    box_vertices,
-    4,
-    1.0f,             
-    1.0f,                     
-    (myVec2){650.0f, 150.0f}, 
-    false                   
-    );
-        my_RigidBody_CreatePolygonBody(
-    world,
-    triangle_vertices,
-    3,
-    1.0f,             
-    1.0f,                     
-    (myVec2){650.0f, 150.0f}, 
-    false                   
-    );
-    
-    my_RigidBody_CreateCircleBody(world, 50.0f, 1.0f, 0.5f, (myVec2){350.0f, 500.0f}, false);
-    my_RigidBody_CreatePolygonBody(
-        world,
-        triangle_vertices,
-        4,
-        1.0f,             
-        1.0f,                     
-        (myVec2){450.0f, 100.0f}, 
-        false                   
-    );
-    //my_RigidBody_CreateBoxBody(world, 50.0f, 50.0f, 1.0f, 1.0f, (myVec2){550.0f, 100.0f}, false);
-    /*
-    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){600.0f, 100.0f}, false);
-    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){900.0f, 100.0f}, false);
-    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){100.0f, 100.0f}, false);
-    my_RigidBody_CreateCircleBody(world, 40.0f, 1.0f, 0.5f, (myVec2){400.0f, 100.0f}, false);
-    */
-    // app_state.mouse_pos = (myVec2){0, 0};
-
+    my_RigidBody_CreateBoxBody(world, 8.0f, 1.0f, 10.0f, 0.5, (myVec2){500.0f / PPM, 900.0f / PPM}, true);
 
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";

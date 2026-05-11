@@ -19,7 +19,7 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
 void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex_count ,float density, float restitution, myVec2 position, bool is_static);
 myRigidBodyType my_RigidBody_GetType(myRigidBody* body);
 
-void my_RigidBody_Step(myRigidBody* body, float delta_time);
+void my_RigidBody_Step(myRigidBody* body, myVec2 gravity, float delta_time);
 
 float my_RigidBody_GetRestitution(myRigidBody* body);
 float my_RigidBody_GetInvMass(myRigidBody* body);

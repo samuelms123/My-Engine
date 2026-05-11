@@ -68,7 +68,7 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
 
     body->position = position;
     body->velocity = (myVec2) {0.0f, 0.0f};
-    body->type = MY_RIGIDBODY_BOX;
+    body->type = MY_RIGIDBODY_POLYGON;
     body->density = my_World_ClampDensity(world, density);
     body->force = (myVec2) {0.0f, 0.0f};
     body->restitution = my_World_ClampRestitution(world, restitution);
@@ -76,11 +76,17 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
     body->height = height;
     body->area = width * height;
     body->mass = body->area * density;
-    body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
     body->is_static = is_static;
     body->vertex_count = 4;
     body->is_transform_update_required = true;
     body->angular_velocity = 0.0f;
+
+    if (!is_static) {
+    body->inv_mass = (body->mass > 0) ? 1.0f / body->mass : 0.0f;
+    }
+    else {
+        body->inv_mass = 0.0f;
+    }
 
     // calculate box vertices
     float xh = width / 2.0f;
@@ -137,10 +143,13 @@ float my_RigidBody_GetRestitution(myRigidBody* body) {return body->restitution;}
 float my_RigidBody_GetInvMass(myRigidBody* body) {return body->inv_mass;}
 float my_RigidBody_GetMass(myRigidBody* body) {return body->mass;}
 
-void my_RigidBody_Step(myRigidBody* body, float delta_time) {
+void my_RigidBody_Step(myRigidBody* body, myVec2 gravity, float delta_time) {
+    if (body->is_static) {return;}
+
+
     body->velocity = my_Math_Add(
         body->velocity,
-        my_Math_Scale(body->force, delta_time)
+        my_Math_Scale(gravity, delta_time)
     );
 
     body->position = my_Math_Add(
