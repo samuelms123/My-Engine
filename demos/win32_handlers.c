@@ -4,6 +4,8 @@
 #include "../include/myngn_physics/myngn_body.h"
 #include "../include/myngn_physics/myngn_math.h"
 #include <stdlib.h>
+#include <windows.h>
+#include <wchar.h>
 
 
 extern myWorld* world;
@@ -53,9 +55,6 @@ void on_paint(HWND hwnd, float PPM) {
                 if ((my_RigidBody_GetType(body) == MY_RIGIDBODY_BOX) || (my_RigidBody_GetType(body) == MY_RIGIDBODY_POLYGON)) {
                     myVec2* vertices = my_RigidBody_GetTransformedVertices(body);
                     int count = my_RigidBody_GetVertexCount(body);
-                    myRigidBodyAABB aabb = my_RigidBody_GetAABB(body);
-
-                    Rectangle(memDC, aabb.min.x * PPM, height - (aabb.max.y * PPM), aabb.max.x * PPM, height - (aabb.min.y  * PPM)); // aabb test
 
                     MoveToEx(memDC, (int)(vertices[0].x * PPM), (int)(height - vertices[0].y * PPM), NULL);
 
@@ -121,13 +120,10 @@ void on_key_d_down() {
 }
 
 void on_key_space_down() {
-    myRigidBody* body =  my_World_GetBody(world, 0);
-
-    if (body != NULL) {
-        float vel = my_RigidBody_GetAngularVelocity(body);
-        vel = ANGULAR_SPEED;
-        my_RigidBody_SetAngularVelocity(body, vel);
-    }
+    int bc = my_World_GetBodyCount(world);
+    wchar_t buffer[256];
+    swprintf_s(buffer, 256, L"Current body count is: %d\n", bc);
+    OutputDebugStringW(buffer);
 }
 
 void on_no_press() {

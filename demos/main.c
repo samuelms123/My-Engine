@@ -26,23 +26,16 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     case WM_PAINT:
         on_paint(hwnd, PPM);
         return 0;
-/*
+
     case WM_KEYDOWN:
-        if (wParam == 0x57) key_w_down = true; // W
-        if (wParam == 0x41) key_a_down = true; // A
-        if (wParam == 0x53) key_s_down = true; // S
-        if (wParam == 0x44) key_d_down = true; // D
         if (wParam == 0x20) key_space_down = true; // Space
         return 0;
 
     case WM_KEYUP:
-        if (wParam == 0x57) key_w_down = false; // W
-        if (wParam == 0x41) key_a_down = false; // A
-        if (wParam == 0x53) key_s_down = false; // S
-        if (wParam == 0x44) key_d_down = false; // D
+
         if (wParam == 0x20) key_space_down = false; // Space
         return 0;
-*/
+        
     case WM_MOUSEMOVE:
             {
                 RECT r; GetClientRect(hwnd, &r);
@@ -68,8 +61,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    world = my_World_Create();
-        my_RigidBody_CreateBoxBody(world, 8.0f, 1.0f, 10.0f, 0.5, (myVec2){500.0f / PPM, 100.0f / PPM}, true);
+    world = my_World_CreateDefault();
+    my_RigidBody_CreateBoxBody(world, 8.0f, 1.0f, 10.0f, 0.5, (myVec2){500.0f / PPM, 100.0f / PPM}, true);
 
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";
@@ -152,8 +145,9 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         if (key_a_down) on_key_a_down();
         if (key_s_down) on_key_s_down();
         if (key_d_down) on_key_d_down();
-        if (key_space_down) on_key_space_down();
 */
+        if (key_space_down) on_key_space_down();
+
         // PHYSICS PROCESS
         while (physics_accumulator >= TARGET_PHYSICS_DELTA) {
             my_World_Step(world, TARGET_PHYSICS_DELTA);
