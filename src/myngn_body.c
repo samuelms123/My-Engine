@@ -148,8 +148,8 @@ float my_RigidBody_GetMass(myRigidBody* body) {return body->mass;}
 
 myRigidBodyAABB my_RigidBody_GetAABB(myRigidBody* body) {
     myRigidBodyAABB aabb;
-    aabb.max.x = FLT_MAX;
-    aabb.max.y = FLT_MAX;
+    aabb.max.x = -FLT_MAX;
+    aabb.max.y = -FLT_MAX;
     aabb.min.x = FLT_MAX;
     aabb.min.y = FLT_MAX;
 
@@ -161,6 +161,27 @@ myRigidBodyAABB my_RigidBody_GetAABB(myRigidBody* body) {
         aabb.max.y = pos.y + r;
         aabb.min.x = pos.x - r;
         aabb.min.y = pos.y - r;
+    }
+
+    else if (body->type == MY_RIGIDBODY_POLYGON || body->type == MY_RIGIDBODY_BOX) {
+        myVec2* vertices = my_RigidBody_GetTransformedVertices(body);
+        int count = my_RigidBody_GetVertexCount(body);
+
+        for (int i = 0; i < count; i++) {
+            if (vertices[i].x > aabb.max.x) {
+                aabb.max.x = vertices[i].x;
+            }
+            if (vertices[i].x < aabb.min.x) {
+                aabb.min.x = vertices[i].x;
+            }
+
+            if (vertices[i].y > aabb.max.y) {
+                aabb.max.y = vertices[i].y;
+            }
+            if (vertices[i].y < aabb.min.y) {
+                aabb.min.y = vertices[i].y;
+            }
+        }
     }
 
     return aabb;
