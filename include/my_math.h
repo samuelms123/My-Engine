@@ -20,20 +20,20 @@ typedef struct myTransform {
 
 } myTransform;
 
-myVec2 my_Math_Add(myVec2 a, myVec2 b);
-myVec2 my_Math_Sub(myVec2 a, myVec2 b);
-myVec2 my_Math_Scale(myVec2 v, float scalar);
-myVec2 my_Math_Norm(myVec2 v);
-myVec2 my_Math_Inverse(myVec2 v);
-myVec2 my_Math_Transform(myVec2 v, myTransform transform);
-float my_Math_Distance(myVec2 a, myVec2 b);
-float my_Math_SquaredDistance(myVec2 a, myVec2 b);
-float my_Math_SquaredLength(myVec2 v);
-float my_Math_Dot(myVec2 a, myVec2 b);
-float my_Math_Abs(float a);
-float my_Math_Clamp(float value, float min, float max);
-float my_Math_Min(float a, float b);
-float my_Math_Max(float a, float b);
+myVec2 myMath_Add(myVec2 a, myVec2 b);
+myVec2 myMath_Sub(myVec2 a, myVec2 b);
+myVec2 myMath_Scale(myVec2 v, float scalar);
+myVec2 myMath_Norm(myVec2 v);
+myVec2 myMath_Inverse(myVec2 v);
+myVec2 myMath_Transform(myVec2 v, myTransform transform);
+float myMath_Distance(myVec2 a, myVec2 b);
+float myMath_SquaredDistance(myVec2 a, myVec2 b);
+float myMath_SquaredLength(myVec2 v);
+float myMath_Dot(myVec2 a, myVec2 b);
+float myMath_Abs(float a);
+float myMath_Clamp(float value, float min, float max);
+float myMath_Min(float a, float b);
+float myMath_Max(float a, float b);
 
 
 #endif

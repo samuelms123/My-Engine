@@ -16,16 +16,15 @@ typedef struct myWorldConf {
     myRigidBodyAABB bounds;
 } myWorldConf;
 
-myWorld* my_World_Create(myWorldConf* conf);
-myWorld* my_World_CreateDefault();
-void my_World_Step(myWorld* world, float delta_time);
-void my_World_Free(myWorld* world);
-void my_World_AddBody(myWorld* world, myRigidBody* body);
-void my_World_RemoveBody(myWorld* world, myRigidBody* body);
-int my_World_GetBodyCount(myWorld* world);
-float my_World_ClampRestitution(myWorld* world, float restitution);
-float my_World_ClampDensity(myWorld* world, float density);
-
-myRigidBody* my_World_GetBody(myWorld* world, int index);
+myWorld* myWorld_Create(myWorldConf* conf);
+myWorld* myWorld_CreateDefault();
+myRigidBody* myWorld_GetBody(myWorld* world, int index);
+void myWorld_Step(myWorld* world, float delta_time);
+void myWorld_Free(myWorld* world);
+void myWorld_AddBody(myWorld* world, myRigidBody* body);
+void myWorld_RemoveBody(myWorld* world, myRigidBody* body);
+int myWorld_GetBodyCount(myWorld* world);
+float myWorld_ClampRestitution(myWorld* world, float restitution);
+float myWorld_ClampDensity(myWorld* world, float density);
 
 #endif

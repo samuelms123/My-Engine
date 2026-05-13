@@ -61,8 +61,8 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine, int nCmdShow)
 {
-    world = my_World_CreateDefault();
-    my_RigidBody_CreateBoxBody(world, 8.0f, 1.0f, 10.0f, 0.5, (myVec2){500.0f / PPM, 100.0f / PPM}, true);
+    world = myWorld_CreateDefault();
+    myRigidBody_CreateBox(world, 8.0f, 1.0f, 10.0f, 0.5, (myVec2){500.0f / PPM, 100.0f / PPM}, true);
 
     // Register the window class.
     const wchar_t CLASS_NAME[]  = L"Sample Window Class";
@@ -150,7 +150,7 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
 
         // PHYSICS PROCESS
         while (physics_accumulator >= TARGET_PHYSICS_DELTA) {
-            my_World_Step(world, TARGET_PHYSICS_DELTA);
+            myWorld_Step(world, TARGET_PHYSICS_DELTA);
             physics_accumulator -= TARGET_PHYSICS_DELTA;
         }
 
@@ -162,6 +162,6 @@ int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR pCmdLine
         }
 
     }
-    my_World_Free(world);
+    myWorld_Free(world);
     return (int)msg.wParam;
 }

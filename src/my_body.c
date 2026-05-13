@@ -31,7 +31,7 @@ typedef struct myRigidBody {
     bool is_transform_update_required;
 } myRigidBody;
 
-void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, float restitution, myVec2 position, bool is_static) {
+void myRigidBody_CreateCircle(myWorld* world, float radius, float density, float restitution, myVec2 position, bool is_static) {
 
     myRigidBody* body = (myRigidBody*)malloc(sizeof(myRigidBody));
     /*
@@ -43,9 +43,9 @@ void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, 
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_CIRCLE;
     body->radius = radius;
-    body->density = my_World_ClampDensity(world, density);
+    body->density = myWorld_ClampDensity(world, density);
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = my_World_ClampRestitution(world, restitution);
+    body->restitution = myWorld_ClampRestitution(world, restitution);
     body->area = MY_PI * radius * radius;
     body->mass = body->area * density;
     body->is_static = is_static;
@@ -60,19 +60,19 @@ void my_RigidBody_CreateCircleBody(myWorld* world, float radius, float density, 
         body->inv_mass = 0.0f;
     }
 
-    my_World_AddBody(world, body);
+    myWorld_AddBody(world, body);
 }
 
-void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float density, float restitution, myVec2 position, bool is_static) {
+void myRigidBody_CreateBox(myWorld* world, float width, float height, float density, float restitution, myVec2 position, bool is_static) {
 
     myRigidBody* body = (myRigidBody*)malloc(sizeof(myRigidBody));
 
     body->position = position;
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_POLYGON;
-    body->density = my_World_ClampDensity(world, density);
+    body->density = myWorld_ClampDensity(world, density);
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = my_World_ClampRestitution(world, restitution);
+    body->restitution = myWorld_ClampRestitution(world, restitution);
     body->width = width;
     body->height = height;
     body->area = width * height;
@@ -99,10 +99,10 @@ void my_RigidBody_CreateBoxBody(myWorld* world, float width, float height, float
     body->vertices[2] = (myVec2){-xh, -yh}; // bot left
     body->vertices[3] = (myVec2){xh, -yh}; // bot right
 
-    my_World_AddBody(world, body);
+    myWorld_AddBody(world, body);
 }
 
-void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex_count ,float density, float restitution, myVec2 position, bool is_static) {
+void myRigidBody_CreatePolygon(myWorld* world, myVec2* vertices, int vertex_count ,float density, float restitution, myVec2 position, bool is_static) {
 
     if (vertex_count < 3 || vertex_count > MY_MAX_VERTICES) {
         return;
@@ -112,10 +112,10 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
     body->position = position;
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_POLYGON;
-    body->density = my_World_ClampDensity(world, density);
+    body->density = myWorld_ClampDensity(world, density);
     body->force = (myVec2) {0.0f, 0.0f};
-    body->restitution = my_World_ClampRestitution(world, restitution);
-    body->area = my_RigidBody_CalculateArea(vertices, vertex_count);
+    body->restitution = myWorld_ClampRestitution(world, restitution);
+    body->area = myRigidBody_CalculateArea(vertices, vertex_count);
     body->mass = body->area * density;
     body->is_static = is_static;
     body->vertex_count = vertex_count;
@@ -131,32 +131,32 @@ void my_RigidBody_CreatePolygonBody(myWorld* world, myVec2* vertices, int vertex
     }
 
     // for now
-    body->arithmetic_mean = my_RigidBody_CalculateArithmeticMean(vertices, vertex_count);
+    body->arithmetic_mean = myRigidBody_CalculateArithmeticMean(vertices, vertex_count);
 
     for (int i = 0; i < vertex_count; i++) {
         body->vertices[i].x = vertices[i].x - body->arithmetic_mean.x;
         body->vertices[i].y = vertices[i].y - body->arithmetic_mean.y;
     }
 
-    my_World_AddBody(world, body);
+    myWorld_AddBody(world, body);
 }
 
-myRigidBodyType my_RigidBody_GetType(myRigidBody* body) {return body->type;}
-float my_RigidBody_GetRestitution(myRigidBody* body) {return body->restitution;}
-float my_RigidBody_GetInvMass(myRigidBody* body) {return body->inv_mass;}
-float my_RigidBody_GetMass(myRigidBody* body) {return body->mass;}
+myRigidBodyType myRigidBody_GetType(myRigidBody* body) {return body->type;}
+float myRigidBody_GetRestitution(myRigidBody* body) {return body->restitution;}
+float myRigidBody_GetInvMass(myRigidBody* body) {return body->inv_mass;}
+float myRigidBody_GetMass(myRigidBody* body) {return body->mass;}
 
-myRigidBodyAABB my_RigidBody_GetAABB(myRigidBody* body) {
+myRigidBodyAABB myRigidBody_GetAABB(myRigidBody* body) {
     myRigidBodyAABB aabb;
     aabb.max.x = -FLT_MAX;
     aabb.max.y = -FLT_MAX;
     aabb.min.x = FLT_MAX;
     aabb.min.y = FLT_MAX;
 
-    myVec2 pos = my_RigidBody_GetPosition(body);
+    myVec2 pos = myRigidBody_GetPosition(body);
 
     if (body->type == MY_RIGIDBODY_CIRCLE) {
-        float r = my_RigidBody_GetRadius(body);
+        float r = myRigidBody_GetRadius(body);
         aabb.max.x = pos.x + r;
         aabb.max.y = pos.y + r;
         aabb.min.x = pos.x - r;
@@ -164,8 +164,8 @@ myRigidBodyAABB my_RigidBody_GetAABB(myRigidBody* body) {
     }
 
     else if (body->type == MY_RIGIDBODY_POLYGON || body->type == MY_RIGIDBODY_BOX) {
-        myVec2* vertices = my_RigidBody_GetTransformedVertices(body);
-        int count = my_RigidBody_GetVertexCount(body);
+        myVec2* vertices = myRigidBody_GetTransformedVertices(body);
+        int count = myRigidBody_GetVertexCount(body);
 
         for (int i = 0; i < count; i++) {
             if (vertices[i].x > aabb.max.x) {
@@ -187,18 +187,18 @@ myRigidBodyAABB my_RigidBody_GetAABB(myRigidBody* body) {
     return aabb;
 }
 
-void my_RigidBody_Step(myRigidBody* body, myVec2 gravity, float delta_time) {
+void myRigidBody_Step(myRigidBody* body, myVec2 gravity, float delta_time) {
     if (body->is_static) {return;}
 
 
-    body->velocity = my_Math_Add(
+    body->velocity = myMath_Add(
         body->velocity,
-        my_Math_Scale(gravity, delta_time)
+        myMath_Scale(gravity, delta_time)
     );
 
-    body->position = my_Math_Add(
+    body->position = myMath_Add(
         body->position, 
-        my_Math_Scale(body->velocity, delta_time)
+        myMath_Scale(body->velocity, delta_time)
     );
 
     body->rotation = body->rotation + body->angular_velocity * delta_time;
@@ -207,7 +207,7 @@ void my_RigidBody_Step(myRigidBody* body, myVec2 gravity, float delta_time) {
     body->is_transform_update_required = true;
 }
 
-float my_RigidBody_CalculateArea(myVec2* vertices, int vertex_count) {
+float myRigidBody_CalculateArea(myVec2* vertices, int vertex_count) {
     if (vertex_count < 3) {return 0;}
 
     float a = 0.0f;
@@ -218,57 +218,57 @@ float my_RigidBody_CalculateArea(myVec2* vertices, int vertex_count) {
         b += vertices[i].y * vertices[(i+1) % vertex_count].x;
     }
 
-    return 0.5 * my_Math_Abs((a-b));
+    return 0.5 * myMath_Abs((a-b));
 }
 
-myVec2 my_RigidBody_GetPosition(myRigidBody* body) {return body->position;}
-void my_RigidBody_SetPosition(myRigidBody* body, myVec2 pos) {
+myVec2 myRigidBody_GetPosition(myRigidBody* body) {return body->position;}
+void myRigidBody_SetPosition(myRigidBody* body, myVec2 pos) {
     body->position.x = pos.x;
     body->position.y = pos.y;
     body->is_transform_update_required = true;
 }
 
-myVec2 my_RigidBody_GetVelocity(myRigidBody* body) {return body->velocity;}
-void my_RigidBody_SetVelocity(myRigidBody* body, myVec2 vel) {
+myVec2 myRigidBody_GetVelocity(myRigidBody* body) {return body->velocity;}
+void myRigidBody_SetVelocity(myRigidBody* body, myVec2 vel) {
     body->velocity.x = vel.x;
     body->velocity.y = vel.y;
 }
 
 
-float my_RigidBody_GetRadius(myRigidBody* body) {
+float myRigidBody_GetRadius(myRigidBody* body) {
     if (body->type == MY_RIGIDBODY_CIRCLE) {
         return body->radius;
     }
     return 0.0f;
 }
 
-bool my_RigidBody_IsStatic(myRigidBody* body) {
+bool myRigidBody_IsStatic(myRigidBody* body) {
     return body->is_static;
 }
 
-void my_RigidBody_Rotate(myRigidBody* body, float amount) {
+void myRigidBody_Rotate(myRigidBody* body, float amount) {
     body->rotation += amount;
     body->is_transform_update_required = true;
 }
 
-void my_RigidBody_Move(myRigidBody* body, myVec2 amount) {
-    body->position = my_Math_Add(body->position, amount);
+void myRigidBody_Move(myRigidBody* body, myVec2 amount) {
+    body->position = myMath_Add(body->position, amount);
     body->is_transform_update_required = true;
 }
 
-float my_RigidBody_GetAngularVelocity(myRigidBody* body) {
+float myRigidBody_GetAngularVelocity(myRigidBody* body) {
     return body->angular_velocity;
 }
 
-void my_RigidBody_SetAngularVelocity(myRigidBody* body, float angular_velocity) {
+void myRigidBody_SetAngularVelocity(myRigidBody* body, float angular_velocity) {
     body->angular_velocity = angular_velocity;
 }
 
-int my_RigidBody_GetVertexCount(myRigidBody* body) {
+int myRigidBody_GetVertexCount(myRigidBody* body) {
     return body->vertex_count;
 }
 
-myVec2* my_RigidBody_GetTransformedVertices(myRigidBody* body) {
+myVec2* myRigidBody_GetTransformedVertices(myRigidBody* body) {
     if (body->is_transform_update_required) {
         
         myTransform temp_transform;
@@ -278,7 +278,7 @@ myVec2* my_RigidBody_GetTransformedVertices(myRigidBody* body) {
         temp_transform.q.sin = sinf(body->rotation);
         
         for (int i = 0; i < body->vertex_count; i++) {
-            body->transformed_vertices[i] = my_Math_Transform(body->vertices[i], temp_transform);
+            body->transformed_vertices[i] = myMath_Transform(body->vertices[i], temp_transform);
         }
         
         body->is_transform_update_required = false;
@@ -287,7 +287,7 @@ myVec2* my_RigidBody_GetTransformedVertices(myRigidBody* body) {
     return body->transformed_vertices;
 }
 
-myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count) {
+myVec2 myRigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count) {
     float x_total = 0.0f;
     float y_total = 0.0f;
 
@@ -299,14 +299,14 @@ myVec2 my_RigidBody_CalculateArithmeticMean(myVec2* vertices, int vertex_count) 
     return (myVec2){x_total / (float)vertex_count, y_total / (float)vertex_count};
 }
 
-myVec2 my_RigidBody_GetArithmeticMean(myRigidBody* body) {
-    if (my_RigidBody_GetType(body) == MY_RIGIDBODY_CIRCLE) {
+myVec2 myRigidBody_GetArithmeticMean(myRigidBody* body) {
+    if (myRigidBody_GetType(body) == MY_RIGIDBODY_CIRCLE) {
         return body->position;
     }
 
     return body->arithmetic_mean;
 }
 
-void my_RigidBody_AddForce(myRigidBody* body, myVec2 amount) {
+void myRigidBody_AddForce(myRigidBody* body, myVec2 amount) {
     body->force = amount;
 }

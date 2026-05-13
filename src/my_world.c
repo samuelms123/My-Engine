@@ -17,7 +17,7 @@ struct myWorld {
     int body_capacity;
 };
 
-myWorld* my_World_CreateDefault() {
+myWorld* myWorld_CreateDefault() {
     myWorld* world = (myWorld*)malloc(sizeof(myWorld));
     
     world->gravity = (myVec2){0.0f, -9.81f}; 
@@ -39,7 +39,7 @@ myWorld* my_World_CreateDefault() {
     return world;
 }
 
-myWorld* my_World_Create(myWorldConf* conf) {
+myWorld* myWorld_Create(myWorldConf* conf) {
     myWorld* world = (myWorld*)malloc(sizeof(myWorld));
     
     world->gravity = conf->gravity; 
@@ -58,15 +58,15 @@ myWorld* my_World_Create(myWorldConf* conf) {
     return world;
 }
 
-float my_World_ClampDensity(myWorld* world, float density) {
-    return my_Math_Clamp(density, world->min_density, world->max_density);
+float myWorld_ClampDensity(myWorld* world, float density) {
+    return myMath_Clamp(density, world->min_density, world->max_density);
 }
 
-float my_World_ClampRestitution(myWorld* world, float restitution) {
-    return my_Math_Clamp(restitution, world->min_restitution, world->max_restitution);
+float myWorld_ClampRestitution(myWorld* world, float restitution) {
+    return myMath_Clamp(restitution, world->min_restitution, world->max_restitution);
 }
 
-void my_World_AddBody(myWorld* world, myRigidBody* body) {
+void myWorld_AddBody(myWorld* world, myRigidBody* body) {
     if (world->body_count >= world->body_capacity) {
         world->body_capacity *= 2;
 
@@ -78,14 +78,14 @@ void my_World_AddBody(myWorld* world, myRigidBody* body) {
     world->bodies[world->body_count++] = body;
 }
 
-void my_World_Free(myWorld* world) {
+void myWorld_Free(myWorld* world) {
     if (world->bodies != NULL) {
         free(world->bodies);
     }
     free(world);
 }
 
-void my_World_RemoveBody(myWorld* world, myRigidBody* body) {
+void myWorld_RemoveBody(myWorld* world, myRigidBody* body) {
     if (world == NULL || body == NULL) return;
 
     for (int i = 0; i < world->body_count; i++) {
@@ -100,17 +100,17 @@ void my_World_RemoveBody(myWorld* world, myRigidBody* body) {
     }
 }
 
-void my_World_Step(myWorld* world, float delta_time) {
+void myWorld_Step(myWorld* world, float delta_time) {
 
     // Linear motion and rotations
     for (int i = 0; i < world->body_count; i++) {
         myRigidBody* a_body =  world->bodies[i];
-        my_RigidBody_Step(a_body, world->gravity, delta_time);
+        myRigidBody_Step(a_body, world->gravity, delta_time);
 
-        myRigidBodyAABB aabb = my_RigidBody_GetAABB(a_body);
+        myRigidBodyAABB aabb = myRigidBody_GetAABB(a_body);
 
         if (aabb.min.y < world->bounds.min.y) {
-            my_World_RemoveBody(world, a_body);
+            myWorld_RemoveBody(world, a_body);
             continue;
         }
     }
@@ -124,36 +124,36 @@ void my_World_Step(myWorld* world, float delta_time) {
             myRigidBody* a_body =  world->bodies[i];
             myRigidBody* b_body = world->bodies[j];
 
-            if (my_RigidBody_IsStatic(a_body) && my_RigidBody_IsStatic(b_body)) {
+            if (myRigidBody_IsStatic(a_body) && myRigidBody_IsStatic(b_body)) {
                 continue;
             }
 
-            myRigidBodyType i_type = my_RigidBody_GetType(a_body);
-            myRigidBodyType j_type = my_RigidBody_GetType(b_body);
+            myRigidBodyType i_type = myRigidBody_GetType(a_body);
+            myRigidBodyType j_type = myRigidBody_GetType(b_body);
             
-            myCollisionType collision_type = my_Collision_GetCollisionType(i_type, j_type);
+            myCollisionType collision_type = myCollision_GetCollisionType(i_type, j_type);
             myContact contact;
 
 
             if (collision_type == CIRCLEPOLYGON) {
                 if (i_type == MY_RIGIDBODY_CIRCLE) {
-                    if (my_Collisions_CheckCirclePolygon(a_body, b_body, &contact)) {
+                    if (myCollision_CheckCirclePolygon(a_body, b_body, &contact)) {
                         my_Solver_ResolveCollision(a_body, b_body, &contact);
                     }
                 } else {
                     // b_body is the circle, a_body is the polygon
-                    if (my_Collisions_CheckCirclePolygon(b_body, a_body, &contact)) {
+                    if (myCollision_CheckCirclePolygon(b_body, a_body, &contact)) {
                         my_Solver_ResolveCollision(b_body, a_body, &contact); 
                     }
                 }
             }
             else if (collision_type == POLYGONPOLYGON) {
-                if (my_Collision_CheckPolygons(a_body, b_body, &contact)) {
+                if (myCollision_CheckPolygons(a_body, b_body, &contact)) {
                     my_Solver_ResolveCollision(a_body, b_body, &contact);
                 }
             }
             else if (collision_type == CIRCLECIRCLE) {
-                if (my_Collision_CheckCircles(a_body, b_body, &contact)) {
+                if (myCollision_CheckCircles(a_body, b_body, &contact)) {
                     my_Solver_ResolveCollision(a_body, b_body, &contact);
                 }
             }
@@ -161,11 +161,11 @@ void my_World_Step(myWorld* world, float delta_time) {
     }
 }
 
-int my_World_GetBodyCount(myWorld* world) {
+int myWorld_GetBodyCount(myWorld* world) {
     return world->body_count;
 }
 
-myRigidBody* my_World_GetBody(myWorld* world, int index) {
+myRigidBody* myWorld_GetBody(myWorld* world, int index) {
     if (index < 0 || index >= world->body_count) {
         return NULL; 
     }
