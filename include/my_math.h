@@ -1,5 +1,5 @@
-#ifndef MYNGN_MATH_H
-#define MYNGN_MATH_H
+#ifndef MY_MATH_H
+#define MY_MATH_H
 
 #define MY_PI 3.14159265359f
 

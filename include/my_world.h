@@ -1,7 +1,7 @@
-#ifndef MYPHYSICS_WORLD_H
-#define MYPHYSICS_WORLD_H
+#ifndef MY_WORLD_H
+#define MY_WORLD_H
 
-#include "myngn_body.h"
+#include "my_body.h"
 
 typedef struct myWorld myWorld;
 typedef struct myRigidBody myRigidBody;

@@ -1,7 +1,7 @@
-#include "myngn_solver.h"
-#include "../include/myngn_physics/myngn_math.h"
-#include "../include/myngn_physics/myngn_body.h"
 #include <stdbool.h>
+#include "../include/my_math.h"
+#include "../include/my_body.h"
+#include "my_solver.h"
 
 typedef struct myContact {
     myVec2 normal;

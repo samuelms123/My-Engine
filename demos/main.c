@@ -1,7 +1,7 @@
-#include "../include/myngn_physics/myngn_math.h"
-#include "../include/myngn_physics/myngn_world.h"
+#include "../include/my_math.h"
+#include "../include/my_world.h"
 #include "win32_handlers.h"
-#include "../include/myngn_physics/myngn_world.h"
+#include "../include/my_world.h"
 #include <windowsx.h>
 #include <windows.h>
 #include <stdbool.h>

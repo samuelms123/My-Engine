@@ -1,5 +1,5 @@
-#include "myngn_collision.h"
-#include "../include/myngn_physics/myngn_math.h"
+#include "../include/my_math.h"
+#include "my_collision.h"
 
 #include <float.h>
 #include <math.h>

@@ -2,7 +2,7 @@
 #define WIN32_HANDLERS_H
 
 #include <windows.h>
-#include "../include/myngn_physics/myngn_math.h"
+#include "../include/my_math.h"
 
 void on_paint(HWND hwnd, float PPM);
 void on_key_w_down();

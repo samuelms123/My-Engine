@@ -1,8 +1,8 @@
-#ifndef MYPHYSICS_BODY_H
-#define MYPHYSICS_BODY_H
+#ifndef MY_BODY_H
+#define MY_BODY_H
 
-#include "myngn_math.h"
 #include <stdbool.h>
+#include "my_math.h"
 
 typedef struct myWorld myWorld;
 typedef struct myRigidBody myRigidBody;

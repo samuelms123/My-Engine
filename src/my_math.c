@@ -1,4 +1,4 @@
-#include "../include/myngn_physics/myngn_math.h"
+#include "../include/my_math.h"
 #include <math.h>
 
 myVec2 my_Math_Add(myVec2 a, myVec2 b) {

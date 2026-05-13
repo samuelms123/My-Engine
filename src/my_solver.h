@@ -1,8 +1,8 @@
-#ifndef MYPHYSICS_SOLVER_H
-#define MYPHYSICS_SOLVER_H
+#ifndef MY_SOLVER_H
+#define MY_SOLVER_H
 
-#include "../include/myngn_physics/myngn_math.h"
-#include "../include/myngn_physics/myngn_body.h"
+#include "../include/my_math.h"
+#include "../include/my_body.h"
 
 typedef struct myContact {
     myVec2 normal;

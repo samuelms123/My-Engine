@@ -1,9 +1,9 @@
-#ifndef MYPHYSICS_COLLISION_H
-#define MYPHYSICS_COLLISION_H
+#ifndef MY_COLLISION_H
+#define MY_COLLISION_H
 
 #include <stdbool.h>
-#include "../include/myngn_physics/myngn_body.h"
-#include "myngn_solver.h"
+#include "../include/my_body.h"
+#include "my_solver.h"
 
 typedef struct myProjectionResult {
     float min;

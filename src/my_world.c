@@ -1,9 +1,8 @@
 #include <windows.h>
-#include "../include/myngn_physics/myngn_world.h"
-#include "../include/myngn_physics/myngn_math.h"
-#include "myngn_solver.h"
-#include "myngn_collision.h"
-#include <windows.h>
+#include "../include/my_world.h"
+#include "../include/my_math.h"
+#include "my_solver.h"
+#include "my_collision.h"
 
 struct myWorld {
     myVec2 gravity;
