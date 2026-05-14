@@ -34,6 +34,8 @@ float myMath_Abs(float a);
 float myMath_Clamp(float value, float min, float max);
 float myMath_Min(float a, float b);
 float myMath_Max(float a, float b);
+float myMath_Lerp(float a, float b, float t);
+float myMath_InvLerp(float a, float b, float v);
 
 
 #endif

@@ -10,6 +10,6 @@ typedef struct myContact {
 } myContact;
 
 
-void my_Solver_ResolveCollision(myRigidBody* body_a, myRigidBody* body_b, myContact* contact);
+void mySolver_ResolveCollision(myRigidBody* body_a, myRigidBody* body_b, myContact* contact);
 
 #endif

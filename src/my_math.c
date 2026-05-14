@@ -102,3 +102,11 @@ float myMath_Max(float a, float b) {
     }
     return a;
 }
+
+float myMath_Lerp(float a, float b, float t) {
+    return (1.0f - t) * a + b * t;
+}
+
+float myMath_InvLerp(float a, float b, float v) {
+    return (v - a) / ( b - a );
+}
