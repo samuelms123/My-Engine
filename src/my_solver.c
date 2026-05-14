@@ -2,18 +2,17 @@
 #include "../include/my_math.h"
 #include "../include/my_body.h"
 #include "my_solver.h"
-
-typedef struct myContact {
-    myVec2 normal;
-    float penetration;
-} myContact;
+#include "my_collision.h"
 
 
-void mySolver_ResolveCollision(myRigidBody* body_a, myRigidBody* body_b, myContact* contact) {
+void mySolver_ResolveCollision(myContact* contact) {
 
     if (contact->penetration <= 0.0f) {
         return;
     }
+
+    myRigidBody* body_a = contact->a;
+    myRigidBody* body_b = contact->b;
 
     myVec2 normal = myMath_Norm(contact->normal);
 

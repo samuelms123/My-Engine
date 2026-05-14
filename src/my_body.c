@@ -34,11 +34,7 @@ typedef struct myRigidBody {
 void myRigidBody_CreateCircle(myWorld* world, float radius, float density, float restitution, myVec2 position, bool is_static) {
 
     myRigidBody* body = (myRigidBody*)malloc(sizeof(myRigidBody));
-    /*
-    if (body == NULL) {
-        return NULL;
-    }
-        */
+
     body->position = position;
     body->velocity = (myVec2) {0.0f, 0.0f};
     body->type = MY_RIGIDBODY_CIRCLE;

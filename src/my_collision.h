@@ -3,7 +3,6 @@
 
 #include <stdbool.h>
 #include "../include/my_body.h"
-#include "my_solver.h"
 
 typedef struct myProjectionResult {
     float min;
@@ -16,6 +15,17 @@ typedef enum myCollisionType {
     POLYGONPOLYGON,
     BOXBOX
 } myCollisionType;
+
+typedef struct myContact {
+    myVec2 normal;
+    float penetration;
+    myRigidBody* a;
+    myRigidBody* b;
+    myVec2 cp1;
+    myVec2 cp2;
+    int cp_count;
+    
+} myContact;
 
 bool myCollision_CheckCircles(myRigidBody* a, myRigidBody* b, myContact* out_contact);
 bool myCollision_CheckPolygons(myRigidBody* a, myRigidBody* b, myContact* out_contact);

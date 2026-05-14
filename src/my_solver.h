@@ -3,13 +3,9 @@
 
 #include "../include/my_math.h"
 #include "../include/my_body.h"
-
-typedef struct myContact {
-    myVec2 normal;
-    float penetration;
-} myContact;
+#include "my_collision.h"
 
 
-void mySolver_ResolveCollision(myRigidBody* body_a, myRigidBody* body_b, myContact* contact);
+void mySolver_ResolveCollision(myContact* contact);
 
 #endif

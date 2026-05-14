@@ -28,6 +28,8 @@ bool myCollision_CheckCircles(myRigidBody* a, myRigidBody* b, myContact* out_con
     myVec2 normal = myMath_Norm(myMath_Sub(pos_b, pos_a));
     out_contact->penetration = radii - distance;
     out_contact->normal = normal;
+    out_contact->a = a;
+    out_contact->b = b;
 
     return true;
 }
@@ -46,7 +48,7 @@ myProjectionResult myCollision_ProjectVertices(myVec2* vertices, myVec2 normaliz
     return projectionResult;
 }
 
-myProjectionResult my_Collisions_ProjectCircle(myVec2 circle_center, float radius, myVec2 normalized_axis) {
+myProjectionResult myCollision_ProjectCircle(myVec2 circle_center, float radius, myVec2 normalized_axis) {
     myProjectionResult projectionResult;
     projectionResult.min = FLT_MAX;
     projectionResult.max = -FLT_MAX;
@@ -59,7 +61,7 @@ myProjectionResult my_Collisions_ProjectCircle(myVec2 circle_center, float radiu
     return projectionResult;
 }
 
-int my_Collisions_FindClosestPointOnPolygon(myVec2 circle_circle_center, myVec2* vertices, int vertex_count) {
+int myCollision_FindClosestPointOnPolygon(myVec2 circle_circle_center, myVec2* vertices, int vertex_count) {
     int index = -1;
     float closest_point = FLT_MAX;
 
@@ -129,6 +131,9 @@ bool myCollision_CheckPolygons(myRigidBody* a, myRigidBody* b, myContact* out_co
 
     }
 
+    out_contact->a = a;
+    out_contact->b = b;
+
     return true;
 }
 
@@ -151,7 +156,7 @@ bool myCollision_CheckCirclePolygon(myRigidBody* circle, myRigidBody* polygon, m
         test_axis = myMath_Norm((myVec2){edge.y, -edge.x}); // normalized normal = test axis
 
         myProjectionResult projectionResult_polygon = myCollision_ProjectVertices(vertices, test_axis, vertex_count);
-        myProjectionResult projectionResult_circle = my_Collisions_ProjectCircle(circle_center, radius, test_axis);
+        myProjectionResult projectionResult_circle = myCollision_ProjectCircle(circle_center, radius, test_axis);
 
         if ((projectionResult_polygon.max < projectionResult_circle.min) || (projectionResult_circle.max < projectionResult_polygon.min)) {
             return false;
@@ -167,13 +172,13 @@ bool myCollision_CheckCirclePolygon(myRigidBody* circle, myRigidBody* polygon, m
         }
     }
 
-    int closest_point_index = my_Collisions_FindClosestPointOnPolygon(circle_center, vertices, vertex_count);
+    int closest_point_index = myCollision_FindClosestPointOnPolygon(circle_center, vertices, vertex_count);
     myVec2 closest_vertex = vertices[closest_point_index];
 
     test_axis = myMath_Norm(myMath_Sub(closest_vertex, circle_center));
 
     myProjectionResult projectionResult_polygon = myCollision_ProjectVertices(vertices, test_axis, vertex_count);
-    myProjectionResult projectionResult_circle = my_Collisions_ProjectCircle(circle_center, radius, test_axis);
+    myProjectionResult projectionResult_circle = myCollision_ProjectCircle(circle_center, radius, test_axis);
 
     if ((projectionResult_polygon.max < projectionResult_circle.min) || (projectionResult_circle.max < projectionResult_polygon.min)) {
         return false;
@@ -187,6 +192,9 @@ bool myCollision_CheckCirclePolygon(myRigidBody* circle, myRigidBody* polygon, m
         out_contact->penetration = smaller_pen;
         out_contact->normal = test_axis;
     }
+
+    out_contact->a = circle;
+    out_contact->b = polygon;
     
     return true;
 }

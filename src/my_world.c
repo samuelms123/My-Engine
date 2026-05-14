@@ -138,23 +138,23 @@ void myWorld_Step(myWorld* world, float delta_time) {
             if (collision_type == CIRCLEPOLYGON) {
                 if (i_type == MY_RIGIDBODY_CIRCLE) {
                     if (myCollision_CheckCirclePolygon(a_body, b_body, &contact)) {
-                        mySolver_ResolveCollision(a_body, b_body, &contact);
+                        mySolver_ResolveCollision(&contact);
                     }
                 } else {
                     // b_body is the circle, a_body is the polygon
                     if (myCollision_CheckCirclePolygon(b_body, a_body, &contact)) {
-                        mySolver_ResolveCollision(b_body, a_body, &contact); 
+                        mySolver_ResolveCollision(&contact); 
                     }
                 }
             }
             else if (collision_type == POLYGONPOLYGON) {
                 if (myCollision_CheckPolygons(a_body, b_body, &contact)) {
-                    mySolver_ResolveCollision(a_body, b_body, &contact);
+                    mySolver_ResolveCollision(&contact);
                 }
             }
             else if (collision_type == CIRCLECIRCLE) {
                 if (myCollision_CheckCircles(a_body, b_body, &contact)) {
-                    mySolver_ResolveCollision(a_body, b_body, &contact);
+                    mySolver_ResolveCollision(&contact);
                 }
             }
         }
